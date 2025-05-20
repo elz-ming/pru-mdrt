@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
+import { IM_Fell_English } from "next/font/google";
 
 interface TaskFormProps {
   groupId: string;
@@ -10,7 +11,6 @@ interface TaskFormProps {
 
 export default function TaskForm({ groupId }: TaskFormProps) {
   const [title, setTitle] = useState("");
-  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,10 +25,8 @@ export default function TaskForm({ groupId }: TaskFormProps) {
       });
 
       setTitle("");
-      setError(null);
     } catch (err) {
       console.error("Error adding task:", err);
-      setError("Failed to add task");
     }
   };
 
