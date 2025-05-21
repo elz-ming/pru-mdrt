@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
-import { IM_Fell_English } from "next/font/google";
 
 interface TaskFormProps {
   groupId: string;
