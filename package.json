@@ -6,14 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "bot:dev": "ts-node bot/index.ts"
   },
   "dependencies": {
     "@telegram-apps/sdk-react": "^3.2.4",
+    "dotenv": "^16.5.0",
     "firebase": "^11.7.3",
     "next": "15.3.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "telegraf": "^4.16.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -24,6 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
