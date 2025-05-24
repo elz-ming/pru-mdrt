@@ -1,0 +1,78 @@
+{
+  "launchParams": {
+    "tgWebAppData": {
+      "auth_date": "2025-05-24T21:12:15.000Z",
+      "chat_type": "sender",
+      "chat_instance": "7270829603001845573",
+      "hash": "b71b0e297e630eacabfb15a5712c4d9557de15feccd3feeb94a9ef8009cddd67",
+      "start_param": "NjYzODczODU0MA==",
+      "signature": "m821YIq6XQfnHC3Zq1mKaY3XNq4ioQkfxPVH18wFWfijwcNPsWjii1YzLo_1ukdvSfRHy77UnkZZoth7c86MCQ",
+      "user": {
+        "allows_write_to_pm": true,
+        "first_name": "Zhenming",
+        "id": 6638738540,
+        "last_name": "Lin",
+        "language_code": "en",
+        "photo_url": "https://t.me/i/userpic/320/UCuWiIWD1L4p7CJMjKMXuYVfUVVtX8k5QnlMvkSwZt_U0jD0iyJw8vI8RuYq0JZu.svg",
+        "username": "ELZ22"
+      }
+    },
+    "tgWebAppPlatform": "tdesktop",
+    "tgWebAppStartParam": "NjYzODczODU0MA==",
+    "tgWebAppThemeParams": {
+      "accent_text_color": "#168acd",
+      "bg_color": "#ffffff",
+      "bottom_bar_bg_color": "#ffffff",
+      "button_color": "#40a7e3",
+      "button_text_color": "#ffffff",
+      "destructive_text_color": "#d14e4e",
+      "header_bg_color": "#ffffff",
+      "hint_color": "#999999",
+      "link_color": "#168acd",
+      "secondary_bg_color": "#f1f1f1",
+      "section_bg_color": "#ffffff",
+      "section_header_text_color": "#168acd",
+      "section_separator_color": "#e7e7e7",
+      "subtitle_text_color": "#999999",
+      "text_color": "#000000"
+    },
+    "tgWebAppVersion": "9.0"
+  },
+  "launchParams2": {
+    "tgWebAppData": {
+      "auth_date": "2025-05-24T19:22:21.000Z",
+      "hash": "2f9f33827ea19b928a6667c757d578ed43225d4e23b1e0352f798df126a5c801",
+      "query_id": "AAFsHLMLAwAAAGwcswsMBZTJ",
+      "signature": "WHXrjxU8CeEWGvQeZ6L_wkKMXmu15SeJ0VKIbIduyWFKNT4aw4nlOYxFgWWfbnVjBMK_IG0LwqQsr1OKbybUDQ",
+      "user": {
+        "allows_write_to_pm": true,
+        "first_name": "Zhenming",
+        "id": 6638738540,
+        "last_name": "Lin",
+        "language_code": "en",
+        "photo_url": "https://t.me/i/userpic/320/UCuWiIWD1L4p7CJMjKMXuYVfUVVtX8k5QnlMvkSwZt_U0jD0iyJw8vI8RuYq0JZu.svg",
+        "username": "ELZ22"
+      }
+    },
+    "tgWebAppPlatform": "tdesktop",
+    "tgWebAppThemeParams": {
+      "accent_text_color": "#168acd",
+      "bg_color": "#ffffff",
+      "bottom_bar_bg_color": "#ffffff",
+      "button_color": "#40a7e3",
+      "button_text_color": "#ffffff",
+      "destructive_text_color": "#d14e4e",
+      "header_bg_color": "#ffffff",
+      "hint_color": "#999999",
+      "link_color": "#168acd",
+      "secondary_bg_color": "#f1f1f1",
+      "section_bg_color": "#ffffff",
+      "section_header_text_color": "#168acd",
+      "section_separator_color": "#e7e7e7",
+      "subtitle_text_color": "#999999",
+      "text_color": "#000000"
+    },
+    "tgWebAppVersion": "9.0",
+    "startapp": "NjYzODczODU0MA=="
+  }
+}

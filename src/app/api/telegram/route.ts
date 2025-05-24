@@ -43,7 +43,7 @@ bot.command("test", (ctx) => {
         [
           {
             text: "Just a Button",
-            url: `${webAppUrl}`,
+            web_app: { url: `${webAppUrl}` },
           },
         ],
       ],
