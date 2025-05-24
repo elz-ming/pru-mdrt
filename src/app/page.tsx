@@ -33,8 +33,7 @@ function TaskBoard() {
           }
         } else {
           console.log("No start_param available");
-          console.log("launchParams full content:", launchParams);
-          setError(`launchParams: ${JSON.stringify(launchParams)}`);
+          setError("No group ID provided");
         }
       } catch (error) {
         console.error("Error in initializeComponent:", error);
