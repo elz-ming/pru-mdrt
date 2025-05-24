@@ -20,7 +20,7 @@ bot.command("help", (ctx) => {
 
 bot.command("webapp", (ctx) => {
   const chatId = ctx.chat.id;
-  const encoded = Buffer.from(chatId.toString()).toString("base64");
+  const encodedGroupId = Buffer.from(chatId.toString()).toString("base64");
   ctx.reply("🔓 Open Mini App", {
     reply_markup: {
       inline_keyboard: [
@@ -28,7 +28,7 @@ bot.command("webapp", (ctx) => {
           {
             text: "Open App",
             web_app: {
-              url: `${webAppUrl}?startapp=${encoded}`,
+              url: `${webAppUrl}?startapp=${encodedGroupId}`,
             },
           },
         ],
