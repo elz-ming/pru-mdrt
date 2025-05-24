@@ -18,10 +18,11 @@ bot.command("help", (ctx) => {
 });
 
 bot.command("webapp", (ctx) => {
-  ctx.reply("It works!");
-  //   const chatId = ctx.chat.id;
+  const chatId = ctx.chat.id;
+  ctx.reply(`${chatId}`);
   //   const encodedGroupId = Buffer.from(chatId.toString()).toString("base64");
-  //   const webAppUrl = process.env.WEBAPP_URL!;
+  //   ctx.reply("It works!");
+  const webAppUrl = process.env.WEBAPP_URL!;
   //   ctx.reply("🔓 Open Mini App", {
   //     reply_markup: {
   //       inline_keyboard: [
