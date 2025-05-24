@@ -2,7 +2,6 @@ import { Telegraf } from "telegraf";
 import { NextRequest } from "next/server";
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
-const webAppUrl = process.env.WEBAPP_URL!;
 
 // Commands
 bot.command("start", (ctx) => {
@@ -22,6 +21,7 @@ bot.command("webapp", (ctx) => {
   ctx.reply("It works!");
   //   const chatId = ctx.chat.id;
   //   const encodedGroupId = Buffer.from(chatId.toString()).toString("base64");
+  //   const webAppUrl = process.env.WEBAPP_URL!;
   //   ctx.reply("🔓 Open Mini App", {
   //     reply_markup: {
   //       inline_keyboard: [
