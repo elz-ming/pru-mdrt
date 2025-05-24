@@ -21,8 +21,8 @@ function TaskBoard() {
   useEffect(() => {
     const initializeComponent = async () => {
       try {
-        if (launchParams?.startapp) {
-          const encodedGroupId = launchParams.startapp;
+        if (launchParams?.startParam) {
+          const encodedGroupId = launchParams.startParam;
           try {
             const decodedGroupId = atob(encodedGroupId as string);
             console.log("Decoded Group ID:", decodedGroupId);
