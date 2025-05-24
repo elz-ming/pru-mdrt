@@ -39,9 +39,9 @@ bot.command("webapp", (ctx) => {
 
 // Handle Telegram POST updates
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-
   try {
+    const body = await req.json();
+    console.log("🔥 Telegram update received:", JSON.stringify(body, null, 2));
     await bot.handleUpdate(body);
     return new Response("OK", { status: 200 });
   } catch (err) {
