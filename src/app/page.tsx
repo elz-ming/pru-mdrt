@@ -21,8 +21,12 @@ function TaskBoard() {
   useEffect(() => {
     const initializeComponent = async () => {
       try {
-        if (launchParams?.startParam) {
-          const encodedGroupId = launchParams.startParam;
+        if (launchParams) {
+          const encodedGroupId =
+            launchParams.tgWebAppStartParam ??
+            launchParams?.tgWebAppData?.start_param ??
+            launchParams?.startapp ??
+            null;
           try {
             const decodedGroupId = atob(encodedGroupId as string);
             console.log("Decoded Group ID:", decodedGroupId);
@@ -32,7 +36,7 @@ function TaskBoard() {
             setError("Invalid group ID format");
           }
         } else {
-          console.log("No start_param available");
+          console.log("No launchParams available");
           setError(`launchParams: ${JSON.stringify(launchParams)}`);
         }
       } catch (error) {
