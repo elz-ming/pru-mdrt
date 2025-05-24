@@ -28,9 +28,7 @@ bot.command("webapp", (ctx) => {
         [
           {
             text: "Open App",
-            web_app: {
-              url: `${webAppUrl}?startapp=${encodedGroupId}`,
-            },
+            url: `${webAppUrl}?startapp=${encodedGroupId}`,
           },
         ],
       ],
