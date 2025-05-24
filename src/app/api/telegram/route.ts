@@ -51,6 +51,12 @@ bot.command("test", (ctx) => {
   });
 });
 
+// Respond to any plain text message
+bot.on("text", (ctx) => {
+  const userMessage = ctx.message.text;
+  ctx.reply(`👋 You said: "${userMessage}"`);
+});
+
 // Handle Telegram POST updates
 export async function POST(req: NextRequest) {
   try {
