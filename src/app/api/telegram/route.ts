@@ -9,7 +9,7 @@ bot.command("start", (ctx) => {
   ctx.reply("Welcome to PruMDRT Bot! 🚀\nUse /help to see available commands.");
 });
 
-bot.command("help", (ctx: any) => {
+bot.command("help", (ctx) => {
   ctx.reply(
     "Available commands:\n" +
       "/start - Start the bot\n" +
