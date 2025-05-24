@@ -22,7 +22,7 @@ bot.command("webapp", (ctx) => {
   ctx.reply(`${chatId}`);
   //   const encodedGroupId = Buffer.from(chatId.toString()).toString("base64");
   //   ctx.reply("It works!");
-  const webAppUrl = process.env.WEBAPP_URL!;
+  //   const webAppUrl = process.env.WEBAPP_URL!;
   //   ctx.reply("🔓 Open Mini App", {
   //     reply_markup: {
   //       inline_keyboard: [
