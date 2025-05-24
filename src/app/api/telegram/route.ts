@@ -36,25 +36,25 @@ bot.command("webapp", (ctx) => {
   });
 });
 
-bot.command("test", (ctx) => {
-  ctx.reply("test", {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          {
-            text: "Just a Button",
-            web_app: { url: `${webAppUrl}` },
-          },
-        ],
-      ],
-    },
-  });
-});
-
 // Respond to any plain text message
-bot.on("text", (ctx) => {
+bot.on("text", async (ctx) => {
   const userMessage = ctx.message.text;
-  ctx.reply(`👋 You said: "${userMessage}"`);
+
+  const response = await fetch("https://api.cohere.ai/v1/chat", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.COHERE_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "command-r-plus",
+      message: userMessage,
+    }),
+  });
+
+  const data = await response.json();
+
+  ctx.reply(data.text || "🤖 Sorry, no response.");
 });
 
 // Handle Telegram POST updates
