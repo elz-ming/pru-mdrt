@@ -23,16 +23,7 @@ bot.command("webapp", (ctx) => {
   const webAppUrl = process.env.WEBAPP_URL!;
   ctx.reply("🔓 Open Web App", {
     reply_markup: {
-      inline_keyboard: [
-        [
-          {
-            text: "Open App",
-            web_app: {
-              url: `${webAppUrl}?startapp=${encodedGroupId}`,
-            },
-          },
-        ],
-      ],
+      inline_keyboard: [[{ text: "Just a Button", callback_data: "x" }]],
     },
   });
 });
