@@ -19,22 +19,23 @@ bot.command("help", (ctx) => {
 });
 
 bot.command("webapp", (ctx) => {
-  const chatId = ctx.chat.id;
-  const encodedGroupId = Buffer.from(chatId.toString()).toString("base64");
-  ctx.reply("🔓 Open Mini App", {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          {
-            text: "Open App",
-            web_app: {
-              url: `${webAppUrl}?startapp=${encodedGroupId}`,
-            },
-          },
-        ],
-      ],
-    },
-  });
+  ctx.reply("It works!");
+  //   const chatId = ctx.chat.id;
+  //   const encodedGroupId = Buffer.from(chatId.toString()).toString("base64");
+  //   ctx.reply("🔓 Open Mini App", {
+  //     reply_markup: {
+  //       inline_keyboard: [
+  //         [
+  //           {
+  //             text: "Open App",
+  //             web_app: {
+  //               url: `${webAppUrl}?startapp=${encodedGroupId}`,
+  //             },
+  //           },
+  //         ],
+  //       ],
+  //     },
+  //   });
 });
 
 // Handle Telegram POST updates
