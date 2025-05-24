@@ -19,9 +19,9 @@ bot.command("help", (ctx) => {
 
 bot.command("webapp", (ctx) => {
   const chatId = ctx.chat.id;
-  ctx.reply(`${chatId}`);
-  //   const encodedGroupId = Buffer.from(chatId.toString()).toString("base64");
-  //   ctx.reply("It works!");
+  //   ctx.reply(`chatId: ${chatId}`);
+  const encodedGroupId = Buffer.from(chatId.toString()).toString("base64");
+  ctx.reply(`encodedGroupId: ${encodedGroupId}`);
   //   const webAppUrl = process.env.WEBAPP_URL!;
   //   ctx.reply("🔓 Open Mini App", {
   //     reply_markup: {
