@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import HeaderBar from "@/app/components/HeaderBar";
 import FooterBar from "@/app/components/FooterBar";
+import "./globals.css";
 
 export default function RootLayout({
   children,
