@@ -3,8 +3,6 @@
 import { useState, useEffect, Suspense } from "react";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import dynamic from "next/dynamic";
-import HeaderBar from "@/app/components/HeaderBar";
-import FooterBar from "@/app/components/FooterBar";
 
 // Dynamic import to avoid SSR issues
 const MDRTDashboardClient = dynamic(() => Promise.resolve(MDRTDashboard), {
@@ -58,8 +56,6 @@ function MDRTDashboard() {
 
   return (
     <div className="min-h-screen bg-white p-4 text-black">
-      <HeaderBar title="Home" />
-
       <main>
         <p className="text-sm text-gray-600 mb-4">User ID: {groupId}</p>
 
@@ -86,8 +82,6 @@ function MDRTDashboard() {
           </div>
         </section>
       </main>
-
-      <FooterBar />
     </div>
   );
 }
