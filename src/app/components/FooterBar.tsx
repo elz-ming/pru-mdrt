@@ -10,7 +10,7 @@ export default function FooterBar() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <nav className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around py-2 z-50">
+    <nav className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-center py-2 z-50">
       <button
         onClick={() => router.push("/groups")}
         className="flex flex-col items-center"
