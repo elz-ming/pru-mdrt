@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import Image from "next/image";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import dynamic from "next/dynamic";
-import { initialize } from "next/dist/server/lib/render-server";
 
 // Dynamic import to avoid SSR issues
 const MDRTDashboardClient = dynamic(() => Promise.resolve(MDRTDashboard), {
