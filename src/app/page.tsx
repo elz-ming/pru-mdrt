@@ -3,6 +3,8 @@
 import { useState, useEffect, Suspense } from "react";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import dynamic from "next/dynamic";
+import HeaderBar from "@/app/components/HeaderBar";
+import FooterBar from "@/app/components/FooterBar";
 
 // Dynamic import to avoid SSR issues
 const MDRTDashboardClient = dynamic(() => Promise.resolve(MDRTDashboard), {
@@ -56,40 +58,43 @@ function MDRTDashboard() {
 
   return (
     <div className="min-h-screen bg-white p-4 text-black">
-      <header>
-        <h1 className="text-xl font-bold mb-2">Welcome to MDRT Gamification</h1>
+      <HeaderBar title="Home" />
+
+      <main>
         <p className="text-sm text-gray-600 mb-4">User ID: {groupId}</p>
-      </header>
 
-      {/* Placeholder for profile info */}
-      <section className="mb-6">
-        <h2 className="font-semibold text-lg mb-2">Your Progress</h2>
-        <div className="rounded bg-gray-100 p-4">
-          <p className="text-sm">Level: 3</p>
-          <p className="text-sm">XP: 1,450 / 2,000</p>
-          <p className="text-sm">Current Rank: Silver</p>
-        </div>
-      </section>
+        {/* Placeholder for profile info */}
+        <section className="mb-6">
+          <h2 className="font-semibold text-lg mb-2">Your Progress</h2>
+          <div className="rounded bg-gray-100 p-4">
+            <p className="text-sm">Level: 3</p>
+            <p className="text-sm">XP: 1,450 / 2,000</p>
+            <p className="text-sm">Current Rank: Silver</p>
+          </div>
+        </section>
 
-      {/* Placeholder for badges */}
-      <section>
-        <h2 className="font-semibold text-lg mb-2">Achievements</h2>
-        <div className="flex gap-2">
-          <span className="text-sm bg-yellow-200 px-2 py-1 rounded">
-            🏅 Rookie
-          </span>
-          <span className="text-sm bg-blue-200 px-2 py-1 rounded">
-            💼 5 Policies
-          </span>
-        </div>
-      </section>
+        {/* Placeholder for badges */}
+        <section>
+          <h2 className="font-semibold text-lg mb-2">Achievements</h2>
+          <div className="flex gap-2">
+            <span className="text-sm bg-yellow-200 px-2 py-1 rounded">
+              🏅 Rookie
+            </span>
+            <span className="text-sm bg-blue-200 px-2 py-1 rounded">
+              💼 5 Policies
+            </span>
+          </div>
+        </section>
+      </main>
+
+      <FooterBar />
     </div>
   );
 }
 
 export default function Home() {
   return (
-    <Suspense fallback={<div className="p-8">Loading...</div>}>
+    <Suspense fallback={<div className="p-4">Loading...</div>}>
       <MDRTDashboardClient />
     </Suspense>
   );
