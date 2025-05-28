@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { fetchMilestones } from "@/app/lib/fetchMilestones";
+import type { Milestone } from "@/app/lib/fetchMilestones";
 import MilestoneCard from "./subcomponents/MilestoneCard";
 
 export default function ProfilePage() {
-  const [milestones, setMilestones] = useState<any[]>([]);
+  const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

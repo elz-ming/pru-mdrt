@@ -1,6 +1,6 @@
 "use client";
 
-import { collection, getDocs } from "firebase/firestore";
+import { Timestamp, collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase";
 
 // ✅ Explicit type definition
@@ -10,8 +10,8 @@ export interface Milestone {
   displayName: string;
   description: string;
   order: number;
-  created_at?: any;
-  updated_at?: any;
+  created_at?: Timestamp;
+  updated_at?: Timestamp;
 }
 
 export async function fetchMilestones(): Promise<Milestone[]> {
