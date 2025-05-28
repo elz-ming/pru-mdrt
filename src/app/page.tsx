@@ -4,11 +4,6 @@ import { useState, useEffect, Suspense } from "react";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import dynamic from "next/dynamic";
 
-// Dynamic import to avoid SSR issues
-const MDRTDashboardClient = dynamic(() => Promise.resolve(MDRTDashboard), {
-  ssr: false,
-});
-
 function MDRTDashboard() {
   const [groupId, setGroupId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +13,10 @@ function MDRTDashboard() {
   useEffect(() => {
     const initialize = async () => {
       try {
-        if (launchParams) {
+        const isTelegramWebApp =
+          typeof window !== "undefined" && !!window.Telegram?.WebApp;
+
+        if (isTelegramWebApp && launchParams) {
           try {
             const encodedGroupId =
               launchParams.tgWebAppStartParam ??
@@ -85,6 +83,11 @@ function MDRTDashboard() {
     </div>
   );
 }
+
+// Dynamic import to avoid SSR issues
+const MDRTDashboardClient = dynamic(() => Promise.resolve(MDRTDashboard), {
+  ssr: false,
+});
 
 export default function Home() {
   return (

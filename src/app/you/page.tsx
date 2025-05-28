@@ -1,30 +1,40 @@
 "use client";
 
-export default function YouPage() {
+import { useEffect, useState } from "react";
+import { fetchMilestones } from "@/app/lib/fetchMilestones";
+import MilestoneCard from "./subcomponents/MilestoneCard";
+
+export default function ProfilePage() {
+  const [milestones, setMilestones] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      const data = await fetchMilestones();
+      setMilestones(data);
+      setLoading(false);
+    };
+
+    load();
+  }, []);
+
+  if (loading) return <div className="p-4">Loading milestones...</div>;
+
   return (
-    <div className="p-4">
-      <h2 className="text-lg font-semibold mb-2">Your Journey</h2>
-      <p className="text-sm text-gray-600 mb-4">
-        Personal progress and milestone tracker.
-      </p>
-
-      <section className="mb-4 bg-gray-100 p-4 rounded">
-        <p className="text-sm">Level: 3</p>
-        <p className="text-sm">XP: 1,450 / 2,000</p>
-        <p className="text-sm">Rank: Silver</p>
-      </section>
-
-      <section>
-        <h3 className="text-sm font-medium mb-2">Badges</h3>
-        <div className="flex gap-2">
-          <span className="text-sm bg-yellow-200 px-2 py-1 rounded">
-            🎖️ Consistency
-          </span>
-          <span className="text-sm bg-green-200 px-2 py-1 rounded">
-            💬 Client Whisperer
-          </span>
-        </div>
-      </section>
+    <div className="p-6">
+      <h1 className="text-xl font-bold mb-4">Your Achievements</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {milestones.map((milestone) => (
+          <MilestoneCard
+            key={milestone.id}
+            displayName={milestone.displayName}
+            description={milestone.description}
+            achieved={false} // To be dynamically filled
+            completedAt={null} // To be dynamically filled
+            completionRate={0} // To be dynamically filled
+          />
+        ))}
+      </div>
     </div>
   );
 }

@@ -10,7 +10,10 @@
     "bot:dev": "ts-node bot/index.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.8",
     "@telegram-apps/sdk-react": "^3.2.4",
+    "@twa-dev/types": "^8.0.2",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
     "firebase": "^11.7.3",
     "lucide-react": "^0.511.0",
