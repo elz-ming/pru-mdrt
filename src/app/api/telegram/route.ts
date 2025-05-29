@@ -22,12 +22,6 @@ const qdrant = new QdrantClient({
 
 // Commands
 bot.command("start", async (ctx) => {
-  const telegramUser = ctx.from;
-  if (!telegramUser) return;
-
-  const userId = telegramUser.id.toString();
-  const encodedUserId = Buffer.from(userId).toString("base64");
-
   ctx.reply("Welcome to PruMDRT Bot! 🚀\nUse /webapp to open the Mini App.");
 });
 
