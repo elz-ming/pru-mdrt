@@ -13,10 +13,7 @@ function MDRTDashboard() {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const isTelegramWebApp =
-          typeof window !== "undefined" && !!window.Telegram?.WebApp;
-
-        if (isTelegramWebApp && launchParams) {
+        if (launchParams) {
           try {
             const encodedGroupId =
               launchParams.tgWebAppStartParam ??
