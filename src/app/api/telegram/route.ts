@@ -52,6 +52,27 @@ bot.command("webapp", (ctx) => {
   });
 });
 
+// Respond to any plain text message
+bot.on("text", async (ctx) => {
+  const userMessage = ctx.message.text;
+
+  const response = await fetch("https://api.cohere.ai/v1/chat", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.COHERE_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "command-r-plus",
+      message: userMessage,
+    }),
+  });
+
+  const data = await response.json();
+
+  ctx.reply(data.text || "🤖 Sorry, no response.");
+});
+
 // Handle Telegram POST updates
 export async function POST(req: NextRequest) {
   try {
