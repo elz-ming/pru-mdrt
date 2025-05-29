@@ -1,9 +1,24 @@
 import { Telegraf } from "telegraf";
 import { NextRequest } from "next/server";
+import { CohereClient } from "cohere-ai";
+import { MongoClient } from "mongodb";
+import { QdrantClient } from "@qdrant/js-client-rest";
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
-const webAppUrl = process.env.WEBAPP_URL!;
-const syncUserUrl = `${process.env.SITE_URL}/api/sync-user`;
+
+const cohere = new CohereClient({
+  token: process.env.COHERE_API_KEY,
+});
+
+const mongo = new MongoClient(process.env.MONGO_URI!);
+await mongo.connect();
+const mongo_database = mongo.db("insurance_kb");
+const mongo_collection = mongo_database.collection("chunks");
+
+const qdrant = new QdrantClient({
+  url: process.env.QDRANT_URL!,
+  apiKey: process.env.QDRANT_API_KEY,
+});
 
 // Commands
 bot.command("start", async (ctx) => {
@@ -12,24 +27,6 @@ bot.command("start", async (ctx) => {
 
   const userId = telegramUser.id.toString();
   const encodedUserId = Buffer.from(userId).toString("base64");
-
-  // 🔽 Call your own API to insert this user into Supabase
-  try {
-    await fetch(syncUserUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        telegramId: telegramUser.id,
-        encodedId: encodedUserId,
-        firstName: telegramUser.first_name,
-        lastName: telegramUser.last_name,
-        username: telegramUser.username,
-        languageCode: telegramUser.language_code,
-      }),
-    });
-  } catch (err) {
-    console.error("❌ Failed to sync user with Supabase:", err);
-  }
 
   ctx.reply("Welcome to PruMDRT Bot! 🚀\nUse /webapp to open the Mini App.");
 });
@@ -44,7 +41,7 @@ bot.command("webapp", (ctx) => {
         [
           {
             text: "Open App",
-            url: `${webAppUrl}?startapp=${encodedUserId}`,
+            url: `${process.env.WEBAPP_URL!}?startapp=${encodedUserId}`,
           },
         ],
       ],
@@ -56,21 +53,40 @@ bot.command("webapp", (ctx) => {
 bot.on("text", async (ctx) => {
   const userMessage = ctx.message.text;
 
-  const response = await fetch("https://api.cohere.ai/v1/chat", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.COHERE_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "command-r-plus",
-      message: userMessage,
-    }),
+  // STEP 1: Get the embedding
+  const embedResponse = await cohere.embed({
+    texts: [userMessage],
+    model: "embed-v4.0",
+    inputType: "classification",
+    embeddingTypes: ["float"],
+  });
+  const queryEmbedding = (embedResponse.embeddings as number[][])[0];
+
+  console.log(queryEmbedding);
+
+  // STEP 2: Search Qdrant
+  const searchResults = await qdrant.search("insurance_chunks", {
+    vector: queryEmbedding,
+    limit: 10,
   });
 
-  const data = await response.json();
+  // STEP 3: Fetch full chunks from MongoDB
+  const mongoIds = searchResults
+    .map((r) => r.payload?.mongo_id)
+    .filter((id): id is string => !!id);
+  const matchingDocs = await mongo_collection
+    .find({ _id: { $in: mongoIds } })
+    .toArray();
+  const context = matchingDocs.map((doc) => doc.text).join("\n\n");
 
-  ctx.reply(data.text || "🤖 Sorry, no response.");
+  // STEP 4: Send context + message to Cohere
+  const finalPrompt = `You are an insurance assistant. Answer based on the context below:\n\n${context}\n\nUser: ${userMessage}`;
+
+  const response = await cohere.chat({
+    message: finalPrompt,
+  });
+
+  ctx.reply(response.text || "🤖 Sorry, no response.");
 });
 
 // Handle Telegram POST updates
