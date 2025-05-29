@@ -4,6 +4,14 @@ import { CohereClient } from "cohere-ai";
 import { MongoClient } from "mongodb";
 import { QdrantClient } from "@qdrant/js-client-rest";
 
+type InsuranceChunk = {
+  _id: string;
+  company: string;
+  text: string;
+  source: string;
+  chunk_index: number;
+};
+
 const bot = new Telegraf(process.env.BOT_TOKEN!);
 
 const cohere = new CohereClient({
@@ -13,7 +21,7 @@ const cohere = new CohereClient({
 const mongo = new MongoClient(process.env.MONGO_URI!);
 await mongo.connect();
 const mongo_database = mongo.db("insurance_kb");
-const mongo_collection = mongo_database.collection("chunks");
+const mongo_collection = mongo_database.collection<InsuranceChunk>("chunks");
 
 const qdrant = new QdrantClient({
   url: process.env.QDRANT_URL!,
