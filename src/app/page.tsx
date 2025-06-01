@@ -23,7 +23,9 @@ function MDRTDashboard() {
 
             const decodedGroupId = atob(encodedGroupId as string);
             console.log("Decoded Group ID:", decodedGroupId);
+
             setGroupId(decodedGroupId);
+
             if (typeof encodedGroupId === "string") {
               localStorage.setItem("encoded_id", encodedGroupId as string);
             }
