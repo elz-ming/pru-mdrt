@@ -52,6 +52,18 @@ bot.command("start", async (ctx: any) => {
   const username = ctx.from?.username ?? "";
   const encodedUserId = Buffer.from(userId).toString("base64");
 
+  const photos = await ctx.telegram.getUserProfilePhotos(userId);
+
+  if (photos.total_count === 0) {
+    return ctx.reply("You don't have a Telegram profile photo.");
+  }
+
+  const fileId = photos.photos[0][0].file_id;
+  const file = await ctx.telegram.getFile(fileId);
+  const fileUrl = `https://api.telegram.org/file/bot${TEST_BOT_TOKEN}/${file.file_path}`;
+
+  console.log(fileUrl);
+
   let response: string;
 
   // Check if user exists
@@ -90,7 +102,7 @@ bot.command("start", async (ctx: any) => {
       "Welcome BACK to PruMDRT Bot! 🚀\n\nThis is a prototype create by Team 1B. All data are artificial and solely for demonstration purpose.\n\nAs a recurring user, your profile is as below:\n\n";
   }
 
-  await validateData(encodedUserId);
+  // await validateData(encodedUserId);
 
   ctx.reply(response);
 });

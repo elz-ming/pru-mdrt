@@ -59,20 +59,18 @@ function HomePage() {
   if (!groupId) return <div className="p-4">No valid group ID found.</div>;
 
   return (
-    <div className="min-h-screen flex flex-col relative bg-white text-black">
-      {/* To-Do Section (fixed height, scrollable if needed) */}
-      <div className="h-auto max-h-1/3 border-b overflow-hidden">
-        <ToDoList />
-      </div>
+    <>
+      {/* To-Do Section */}
+      <ToDoList />
 
       {/* Activity Feed */}
-      <div className="flex-1 overflow-auto">
+      <div className="pt-24">
         <ActivityFeed />
       </div>
 
       {/* Add Post Button */}
       <AddPostButton />
-    </div>
+    </>
   );
 }
 
@@ -83,7 +81,6 @@ const HomeClient = dynamic(() => Promise.resolve(HomePage), {
 
 export default function Home() {
   return (
-    // <HomePage />
     <Suspense fallback={<div className="p-4">Loading Home Page...</div>}>
       <HomeClient />
     </Suspense>

@@ -26,44 +26,56 @@ export default function ToDoList() {
   const visibleTasks = expanded ? tasks : tasks.slice(0, 1);
 
   return (
-    <div className="px-4 py-2">
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="font-semibold text-lg">Your To-Do List</h2>
-        {tasks.length > 1 && (
-          <button
-            className="text-sm text-blue-500 underline"
-            onClick={() => setExpanded((prev) => !prev)}
-          >
-            {expanded ? "Collapse ▲" : "Expand ▼"}
-          </button>
-        )}
-      </div>
-
-      <ul className="space-y-2">
-        {visibleTasks.map((task) => (
-          <li
-            key={task.id}
-            className="flex items-center justify-between bg-white rounded shadow px-3 py-2"
-          >
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={task.done}
-                onChange={() => toggleTask(task.id)}
-              />
-              <span className={task.done ? "line-through text-gray-400" : ""}>
-                {task.text}
-              </span>
-            </label>
+    <>
+      <div
+        className={`fixed w-full h-24 px-4  py-2 z-40 ${
+          expanded ? "bg-gray-800/90" : "bg-gray-800"
+        }`}
+      >
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="font-semibold text-lg text-white">Your To-Do List</h2>
+          {tasks.length > 1 && (
             <button
-              className="text-red-500 text-xs"
-              onClick={() => removeTask(task.id)}
+              className="text-sm text-blue-500 underline"
+              onClick={() => setExpanded((prev) => !prev)}
             >
-              ✕
+              {expanded ? "Collapse ▲" : "Expand ▼"}
             </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+          )}
+        </div>
+
+        <ul className="space-y-2">
+          {visibleTasks.map((task) => (
+            <li
+              key={task.id}
+              className="flex items-center justify-between bg-white rounded shadow px-3 py-2"
+            >
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={task.done}
+                  onChange={() => toggleTask(task.id)}
+                />
+                <span className={task.done ? "line-through text-gray-400" : ""}>
+                  {task.text}
+                </span>
+              </label>
+              <button
+                className="text-red-500 text-xs"
+                onClick={() => removeTask(task.id)}
+              >
+                ✕
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {expanded && (
+        <div
+          className="fixed top-[120px] left-0 w-full h-full bg-gray-800/90 z-30"
+          onClick={() => setExpanded(false)}
+        />
+      )}
+    </>
   );
 }
