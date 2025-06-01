@@ -37,7 +37,11 @@ export default function YouPage() {
             displayName={m.displayName}
             description={m.description}
             achieved={m.achieved}
-            completedAt={m.completedAt ? new Date(m.completedAt) : null}
+            completedAt={
+              m.completedAt && !isNaN(Date.parse(m.completedAt))
+                ? new Date(m.completedAt)
+                : null
+            }
             completionRate={m.completionRate}
           />
         ))}

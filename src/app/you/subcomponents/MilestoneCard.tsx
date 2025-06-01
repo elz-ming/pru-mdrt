@@ -33,9 +33,9 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
       {achieved && (
         <div className="mt-2 text-green-600 text-sm font-semibold">
           ✅ Completed
-          {completedAt && (
+          {completedAt && !isNaN(completedAt.getTime()) && (
             <p className="text-xs text-green-700 mt-1">
-              Completed on {format(new Date(completedAt), "MM/dd/yyyy h:mm a")}
+              Completed on {format(completedAt, "MM/dd/yyyy h:mm a")}
             </p>
           )}
         </div>

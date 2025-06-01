@@ -37,12 +37,20 @@ export async function fetchMergedMilestones(
     userProgress.map((item) => [item.milestone_name, item.completed_at])
   );
 
-  const merged = milestones.map((m) => ({
-    ...m,
-    achieved: completedMap.has(m.name),
-    completedAt: completedMap.get(m.name) ?? null,
-    completionRate: 0, // optional: you can calculate this later
-  }));
+  const merged = milestones.map((m) => {
+    const completedAtRaw = completedMap.get(m.name);
+    const completedAt =
+      completedAtRaw && !isNaN(Date.parse(completedAtRaw))
+        ? completedAtRaw
+        : null;
+
+    return {
+      ...m,
+      achieved: !!completedAt,
+      completedAt,
+      completionRate: 0,
+    };
+  });
 
   return merged;
 }

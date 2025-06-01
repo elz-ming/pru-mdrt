@@ -22,6 +22,6 @@ export async function fetchMilestones(): Promise<Milestone[]> {
     ...(doc.data() as Omit<Milestone, "id">),
   }));
 
-  data.sort((a, b) => a.order - b.order);
+  data.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   return data;
 }
