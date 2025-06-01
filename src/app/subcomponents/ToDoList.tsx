@@ -72,7 +72,7 @@ export default function ToDoList() {
       </div>
       {expanded && (
         <div
-          className="fixed top-[120px] left-0 w-full h-full bg-gray-800/90 z-30"
+          className="fixed top-40 left-0 w-full h-full bg-gray-800/90 z-30"
           onClick={() => setExpanded(false)}
         />
       )}
