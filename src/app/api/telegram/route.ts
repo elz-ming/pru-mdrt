@@ -169,6 +169,8 @@ bot.on("text", async (ctx) => {
   // STEP 4: Send context + message to Cohere
   const finalPrompt = `Answer based on the context below:\n\n${context}\n\nUser: ${userMessage}`;
 
+  console.log(`This is the final prompt: ${finalPrompt}`);
+
   const response = await cohereV2.chat({
     model: "command-a-03-2025",
     messages: [
