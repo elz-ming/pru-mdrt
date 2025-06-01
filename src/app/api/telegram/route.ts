@@ -39,7 +39,7 @@ const mongo_database = mongo.db("insurance_kb");
 const mongo_collection = mongo_database.collection<InsuranceChunk>("chunks");
 
 // Commands
-bot.command("start", async (ctx: any) => {
+bot.command("start", async (ctx) => {
   const userId = ctx.from?.id?.toString() ?? "";
   const username = ctx.from?.username ?? "";
   const encodedUserId = Buffer.from(userId).toString("base64");
