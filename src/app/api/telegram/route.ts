@@ -39,10 +39,12 @@ const mongo_database = mongo.db("insurance_kb");
 const mongo_collection = mongo_database.collection<InsuranceChunk>("chunks");
 
 // Commands
-bot.command("start", async (ctx) => {
+bot.command("start", async (ctx: any) => {
   const userId = ctx.from?.id?.toString() ?? "";
   const username = ctx.from?.username ?? "";
   const encodedUserId = Buffer.from(userId).toString("base64");
+
+  let response: string;
 
   // Check if user exists
   const { data, error } = await supabaseAdmin
@@ -51,9 +53,11 @@ bot.command("start", async (ctx) => {
     .eq("encoded_id", encodedUserId)
     .single();
 
+  if (error) console.error("SELECT error:", error);
+
   // If not exist, insert new user
   if (error || !data) {
-    await supabaseAdmin.from("users").insert([
+    const { error: insertError } = await supabaseAdmin.from("users").insert([
       {
         encoded_id: encodedUserId,
         telegram_username: username,
@@ -61,23 +65,24 @@ bot.command("start", async (ctx) => {
         updated_at: new Date().toISOString(),
       },
     ]);
+
+    if (insertError) console.error("INSERT error:", insertError);
+
+    response =
+      "Welcome to PruMDRT Bot! 🚀\n\nThis is a prototype create by Team 1B. All data are artificial and solely for demonstration purpose.\n\nAs a first time user, a profile is created for you:\n\n";
   } else {
-    // Optional: update last login timestamp
-    await supabaseAdmin
+    const { error: updateError } = await supabaseAdmin
       .from("users")
       .update({ updated_at: new Date().toISOString() })
       .eq("encoded_id", encodedUserId);
+
+    if (updateError) console.error("UPDATE error:", updateError);
+
+    response =
+      "Welcome BACK to PruMDRT Bot! 🚀\n\nThis is a prototype create by Team 1B. All data are artificial and solely for demonstration purpose.\n\nAs a recurring user, your profile is as below:\n\n";
   }
 
-  ctx.reply(`
-    Welcome to PruMDRT Bot! 🚀
-
-    This is a prototype created by Team 1B.All data displayed is artificial and not representative of actual users.
-
-    You are a bronze user.
-
-    Use /webapp to open the Mini App.
-  `);
+  ctx.reply(response);
 });
 
 bot.command("webapp", (ctx) => {
