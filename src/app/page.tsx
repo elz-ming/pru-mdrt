@@ -13,7 +13,7 @@ function HomePage() {
   const [groupId, setGroupId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [showIntro, setShowIntro] = useState(true); // NEW
+  const [showIntro, setShowIntro] = useState(false);
   const launchParams = useLaunchParams();
 
   useEffect(() => {
@@ -53,6 +53,15 @@ function HomePage() {
 
     initialize();
   }, [launchParams]);
+
+  useEffect(() => {
+    const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+
+    if (!hasSeenIntro) {
+      setShowIntro(true);
+      localStorage.setItem("hasSeenIntro", "true"); // Set flag
+    }
+  }, []);
 
   if (isLoading) return <div className="p-4">Loading MDRT App...</div>;
 
