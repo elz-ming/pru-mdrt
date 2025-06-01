@@ -4,10 +4,15 @@ import { useState, useEffect, Suspense } from "react";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import dynamic from "next/dynamic";
 
-function MDRTDashboard() {
+import ToDoList from "@/app/subcomponents/ToDoList"; // You'll create this
+import ActivityFeed from "@/app/subcomponents/ActivityFeed"; // You'll create this
+import AddPostButton from "@/app/subcomponents/AddPostButton"; // You'll create this
+
+function HomePage() {
   const [groupId, setGroupId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isExpanded, setIsExpanded] = useState(true);
   const launchParams = useLaunchParams();
 
   useEffect(() => {
@@ -55,46 +60,45 @@ function MDRTDashboard() {
   if (!groupId) return <div className="p-4">No valid group ID found.</div>;
 
   return (
-    <div className="min-h-screen bg-white p-4 text-black">
-      <main>
-        <p className="text-sm text-gray-600 mb-4">User ID: {groupId}</p>
+    <div className="min-h-screen flex flex-col relative bg-white text-black">
+      {/* Expandable To-Do Section */}
+      <div
+        className={`transition-all duration-300 ${
+          isExpanded ? "h-1/3" : "h-12"
+        } overflow-hidden border-b`}
+      >
+        <div className="flex justify-between items-center px-4 py-2 bg-gray-100">
+          <h2 className="font-semibold text-lg">Your To-Do List</h2>
+          <button
+            className="text-sm underline"
+            onClick={() => setIsExpanded((prev) => !prev)}
+          >
+            {isExpanded ? "Collapse ▲" : "Expand ▼"}
+          </button>
+        </div>
+        {isExpanded && <ToDoList />}
+      </div>
 
-        {/* Placeholder for profile info */}
-        <section className="mb-6">
-          <h2 className="font-semibold text-lg mb-2">Your Progress</h2>
-          <div className="rounded bg-gray-100 p-4">
-            <p className="text-sm">Level: 3</p>
-            <p className="text-sm">XP: 1,450 / 2,000</p>
-            <p className="text-sm">Current Rank: Silver</p>
-          </div>
-        </section>
+      {/* Activity Feed */}
+      <div className="flex-1 overflow-auto">
+        <ActivityFeed />
+      </div>
 
-        {/* Placeholder for badges */}
-        <section>
-          <h2 className="font-semibold text-lg mb-2">Achievements</h2>
-          <div className="flex gap-2">
-            <span className="text-sm bg-yellow-200 px-2 py-1 rounded">
-              🏅 Rookie
-            </span>
-            <span className="text-sm bg-blue-200 px-2 py-1 rounded">
-              💼 5 Policies
-            </span>
-          </div>
-        </section>
-      </main>
+      {/* Add Post Button */}
+      <AddPostButton />
     </div>
   );
 }
 
 // Dynamic import to avoid SSR issues
-const MDRTDashboardClient = dynamic(() => Promise.resolve(MDRTDashboard), {
+const HomeClient = dynamic(() => Promise.resolve(HomePage), {
   ssr: false,
 });
 
 export default function Home() {
   return (
-    <Suspense fallback={<div className="p-4">Loading...</div>}>
-      <MDRTDashboardClient />
+    <Suspense fallback={<div className="p-4">Loading Home Page...</div>}>
+      <HomeClient />
     </Suspense>
   );
 }
