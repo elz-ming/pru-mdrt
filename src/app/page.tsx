@@ -61,22 +61,9 @@ function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col relative bg-white text-black">
-      {/* Expandable To-Do Section */}
-      <div
-        className={`transition-all duration-300 ${
-          isExpanded ? "h-1/3" : "h-12"
-        } overflow-hidden border-b`}
-      >
-        <div className="flex justify-between items-center px-4 py-2 bg-gray-100">
-          <h2 className="font-semibold text-lg">Your To-Do List</h2>
-          <button
-            className="text-sm underline"
-            onClick={() => setIsExpanded((prev) => !prev)}
-          >
-            {isExpanded ? "Collapse ▲" : "Expand ▼"}
-          </button>
-        </div>
-        {isExpanded && <ToDoList />}
+      {/* To-Do Section (fixed height, scrollable if needed) */}
+      <div className="h-auto max-h-1/3 border-b overflow-hidden">
+        <ToDoList />
       </div>
 
       {/* Activity Feed */}
@@ -97,6 +84,7 @@ const HomeClient = dynamic(() => Promise.resolve(HomePage), {
 
 export default function Home() {
   return (
+    // <HomePage />
     <Suspense fallback={<div className="p-4">Loading Home Page...</div>}>
       <HomeClient />
     </Suspense>
