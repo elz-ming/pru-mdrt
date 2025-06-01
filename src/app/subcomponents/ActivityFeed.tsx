@@ -18,12 +18,12 @@ export default function ActivityFeed() {
     loadPosts();
   }, [page]);
 
-  const handleScroll = (e: any) => {
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
     const bottom =
-      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+      target.scrollHeight - target.scrollTop === target.clientHeight;
     if (bottom) setPage((prev) => prev + 1);
   };
-
   return (
     <div className="h-full overflow-auto" onScroll={handleScroll}>
       <ul className="p-4 space-y-4">
