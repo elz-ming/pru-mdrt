@@ -4,6 +4,48 @@ const { TEST_BOT_TOKEN, supabaseAdmin } = require("./config");
 // === Initialize Bot ===
 const bot = new Telegraf(TEST_BOT_TOKEN);
 
+const TIERS = ["bronze", "silver", "gold", "MDRT", "COT", "TOT"];
+const DEMO_MILESTONES = ["followup_pro", "crm_master", "sales_closer"];
+
+async function validateData(encodedUserId: string) {
+  console.log(`✅ Validating demo data for: ${encodedUserId}`);
+
+  // STEP 1: Assign random tier if missing
+  const { data: userData, error: userFetchError } = await supabaseAdmin
+    .from("users")
+    .select("tier")
+    .eq("encoded_id", encodedUserId)
+    .single();
+
+  if (!userFetchError && userData && !userData.tier) {
+    const randomTier = TIERS[Math.floor(Math.random() * TIERS.length)];
+    await supabaseAdmin
+      .from("users")
+      .update({ tier: randomTier })
+      .eq("encoded_id", encodedUserId);
+    console.log(`🎖️ Assigned tier "${randomTier}" to user.`);
+  }
+
+  // STEP 2: Insert demo user_milestones if not exists
+  const { data: progressData, error: progressError } = await supabaseAdmin
+    .from("user_milestones")
+    .select("milestone_name")
+    .eq("user_encoded_id", encodedUserId);
+
+  if (!progressError && progressData.length === 0) {
+    const demoProgress = DEMO_MILESTONES.slice(0, 2).map((name) => ({
+      user_encoded_id: encodedUserId,
+      milestone_name: name,
+      completed_at: new Date().toISOString(),
+    }));
+
+    await supabaseAdmin.from("user_milestones").insert(demoProgress);
+    console.log(`🏅 Inserted demo milestones for user.`);
+  }
+
+  // STEP 3: Add any future validations here
+}
+
 // Commands
 bot.command("start", async (ctx: any) => {
   const userId = ctx.from?.id?.toString() ?? "";
@@ -47,6 +89,8 @@ bot.command("start", async (ctx: any) => {
     response =
       "Welcome BACK to PruMDRT Bot! 🚀\n\nThis is a prototype create by Team 1B. All data are artificial and solely for demonstration purpose.\n\nAs a recurring user, your profile is as below:\n\n";
   }
+
+  await validateData(encodedUserId);
 
   ctx.reply(response);
 });

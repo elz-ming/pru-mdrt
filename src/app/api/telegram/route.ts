@@ -1,4 +1,5 @@
 import supabaseAdmin from "@/app/lib/supabaseAdmin";
+import { validateData } from "@/app/lib/validateData";
 
 import { Telegraf } from "telegraf";
 import { NextRequest } from "next/server";
@@ -81,6 +82,8 @@ bot.command("start", async (ctx) => {
     response =
       "Welcome BACK to PruMDRT Bot! 🚀\n\nThis is a prototype create by Team 1B. All data are artificial and solely for demonstration purpose.\n\nAs a recurring user, your profile is as below:\n\n";
   }
+
+  await validateData(encodedUserId);
 
   ctx.reply(response);
 });

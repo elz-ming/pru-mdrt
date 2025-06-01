@@ -1,18 +1,22 @@
-"use client";
-
 import { useEffect, useState } from "react";
-import { fetchMilestones } from "@/app/lib/fetchMilestones";
-import type { Milestone } from "@/app/lib/fetchMilestones";
+import {
+  fetchMergedMilestones,
+  EnrichedMilestone,
+} from "@/app/lib/fetchMergedMilestones";
 import MilestoneCard from "./subcomponents/MilestoneCard";
 
-export default function ProfilePage() {
-  const [milestones, setMilestones] = useState<Milestone[]>([]);
+export default function YouPage() {
+  const [milestones, setMilestones] = useState<EnrichedMilestone[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const encodedId = localStorage.getItem("encoded_id"); // or from session/token
+
+    if (!encodedId) return;
+
     const load = async () => {
-      const data = await fetchMilestones();
-      setMilestones(data);
+      const enriched = await fetchMergedMilestones(encodedId);
+      setMilestones(enriched);
       setLoading(false);
     };
 
@@ -25,14 +29,14 @@ export default function ProfilePage() {
     <div className="p-6">
       <h1 className="text-xl font-bold mb-4">Your Achievements</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {milestones.map((milestone) => (
+        {milestones.map((m) => (
           <MilestoneCard
-            key={milestone.id}
-            displayName={milestone.displayName}
-            description={milestone.description}
-            achieved={false} // To be dynamically filled
-            completedAt={null} // To be dynamically filled
-            completionRate={0} // To be dynamically filled
+            key={m.id}
+            displayName={m.displayName}
+            description={m.description}
+            achieved={m.achieved}
+            completedAt={m.completedAt ? new Date(m.completedAt) : null}
+            completionRate={m.completionRate}
           />
         ))}
       </div>
