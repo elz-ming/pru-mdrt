@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import ActivityCard from "./ActivityCard"; // Adjust path as needed
 
 // Dictionary of 10 sample activities
