@@ -12,7 +12,6 @@ function HomePage() {
   const [groupId, setGroupId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isExpanded, setIsExpanded] = useState(true);
   const launchParams = useLaunchParams();
 
   useEffect(() => {
