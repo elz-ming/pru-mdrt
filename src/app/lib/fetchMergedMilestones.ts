@@ -2,7 +2,7 @@ import {
   fetchMilestones,
   Milestone as FirestoreMilestone,
 } from "./fetchMilestones";
-import supabaseAdmin from "./supabaseAdmin";
+import supabaseClient from "./supabaseClient";
 
 export interface EnrichedMilestone extends FirestoreMilestone {
   achieved: boolean;
@@ -10,14 +10,19 @@ export interface EnrichedMilestone extends FirestoreMilestone {
   completionRate: number; // You can leave this as 0 for now
 }
 
+console.log("John");
+
 export async function fetchMergedMilestones(
   encodedId: string
 ): Promise<EnrichedMilestone[]> {
+  console.log("Doe");
   // 1. Get static milestone list from Firestore
   const milestones = await fetchMilestones();
 
+  console.log(milestones);
+
   // 2. Get user-specific progress from Supabase
-  const { data: userProgress, error } = await supabaseAdmin
+  const { data: userProgress, error } = await supabaseClient
     .from("user_milestones")
     .select("milestone_name, completed_at")
     .eq("user_encoded_id", encodedId);

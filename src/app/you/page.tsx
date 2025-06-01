@@ -17,6 +17,7 @@ export default function YouPage() {
     if (!encodedId) return;
 
     const load = async () => {
+      console.log("Calling fetchMergedMilestones...");
       const enriched = await fetchMergedMilestones(encodedId);
       setMilestones(enriched);
       setLoading(false);
