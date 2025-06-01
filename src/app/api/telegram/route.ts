@@ -177,7 +177,7 @@ bot.on("text", async (ctx) => {
       {
         role: "system",
         content:
-          "You are an insurance assistant. Consider all the context retrieved, and provide a summarization of the points.",
+          "You are an insurance assistant. Consider all the context retrieved, and provide a short conclusion.",
       },
       { role: "user", content: finalPrompt },
     ],
