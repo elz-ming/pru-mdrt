@@ -176,7 +176,8 @@ bot.on("text", async (ctx) => {
     messages: [
       {
         role: "system",
-        content: "You are an insurance assistant.",
+        content:
+          "You are an insurance assistant. Consider all the context retrieved, and provide a summarization of the points.",
       },
       { role: "user", content: finalPrompt },
     ],
