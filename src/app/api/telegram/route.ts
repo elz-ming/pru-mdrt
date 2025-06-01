@@ -143,7 +143,7 @@ bot.on("text", async (ctx) => {
   // STEP 2: Search Qdrant
   const searchResults = await qdrant.search("insurance_chunks", {
     vector: queryEmbedding,
-    limit: 10,
+    limit: 8,
   });
 
   const mongoIds = searchResults
@@ -176,8 +176,7 @@ bot.on("text", async (ctx) => {
     messages: [
       {
         role: "system",
-        content:
-          "You are an insurance assistant. Keep your responses short and to the point.",
+        content: "You are an insurance assistant.",
       },
       { role: "user", content: finalPrompt },
     ],
