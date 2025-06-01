@@ -1,4 +1,4 @@
-import supabaseAdmin from "@/lib/supabaseAdmin";
+import supabaseAdmin from "@/app/lib/supabaseAdmin";
 
 import { Telegraf } from "telegraf";
 import { NextRequest } from "next/server";
