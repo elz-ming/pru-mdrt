@@ -1,3 +1,5 @@
+import supabaseAdmin from "@/lib/supabaseAdmin";
+
 import { Telegraf } from "telegraf";
 import { NextRequest } from "next/server";
 import { CohereClient } from "cohere-ai";
@@ -30,7 +32,44 @@ const qdrant = new QdrantClient({
 
 // Commands
 bot.command("start", async (ctx) => {
-  ctx.reply("Welcome to PruMDRT Bot! 🚀\nUse /webapp to open the Mini App.");
+  const userId = ctx.from?.id?.toString() ?? "";
+  const username = ctx.from?.username ?? "";
+  const encodedUserId = Buffer.from(userId).toString("base64");
+
+  // Check if user exists
+  const { data, error } = await supabaseAdmin
+    .from("users")
+    .select("id")
+    .eq("encoded_id", encodedUserId)
+    .single();
+
+  // If not exist, insert new user
+  if (error || !data) {
+    await supabaseAdmin.from("users").insert([
+      {
+        encoded_id: encodedUserId,
+        telegram_username: username,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+    ]);
+  } else {
+    // Optional: update last login timestamp
+    await supabaseAdmin
+      .from("users")
+      .update({ updated_at: new Date().toISOString() })
+      .eq("encoded_id", encodedUserId);
+  }
+
+  ctx.reply(`
+    Welcome to PruMDRT Bot! 🚀
+
+    This is a prototype created by Team 1B.All data displayed is artificial and not representative of actual users.
+
+    You are a bronze user.
+
+    Use /webapp to open the Mini App.
+  `);
 });
 
 bot.command("webapp", (ctx) => {
