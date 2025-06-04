@@ -14,45 +14,47 @@ function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIntro, setShowIntro] = useState(false);
-  const launchParams = useLaunchParams();
+  // const launchParams = useLaunchParams();
 
-  useEffect(() => {
-    const initialize = async () => {
-      try {
-        if (launchParams) {
-          try {
-            const encodedGroupId =
-              launchParams.tgWebAppStartParam ??
-              launchParams?.tgWebAppData?.start_param ??
-              launchParams?.startapp ??
-              null;
+  localStorage.setItem("encoded_id", "NjYzODczODU0MA==");
 
-            const decodedGroupId = atob(encodedGroupId as string);
-            console.log("Decoded Group ID:", decodedGroupId);
+  // useEffect(() => {
+  //   const initialize = async () => {
+  //     try {
+  //       if (launchParams) {
+  //         try {
+  //           const encodedGroupId =
+  //             launchParams.tgWebAppStartParam ??
+  //             launchParams?.tgWebAppData?.start_param ??
+  //             launchParams?.startapp ??
+  //             null;
 
-            setGroupId(decodedGroupId);
+  //           const decodedGroupId = atob(encodedGroupId as string);
+  //           console.log("Decoded Group ID:", decodedGroupId);
 
-            if (typeof encodedGroupId === "string") {
-              localStorage.setItem("encoded_id", encodedGroupId as string);
-            }
-          } catch (error) {
-            console.error("Error decoding group ID:", error);
-            setError("Invalid group ID format");
-          }
-        } else {
-          console.log("No launchParams available");
-          setError(`launchParams: ${JSON.stringify(launchParams)}`);
-        }
-      } catch (error) {
-        console.error("Error in initializeComponent:", error);
-        setError("An error occurred while initializing the component");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  //           setGroupId(decodedGroupId);
 
-    initialize();
-  }, [launchParams]);
+  //           if (typeof encodedGroupId === "string") {
+  //             localStorage.setItem("encoded_id", encodedGroupId as string);
+  //           }
+  //         } catch (error) {
+  //           console.error("Error decoding group ID:", error);
+  //           setError("Invalid group ID format");
+  //         }
+  //       } else {
+  //         console.log("No launchParams available");
+  //         setError(`launchParams: ${JSON.stringify(launchParams)}`);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error in initializeComponent:", error);
+  //       setError("An error occurred while initializing the component");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   initialize();
+  // }, [launchParams]);
 
   useEffect(() => {
     const hasSeenIntro = localStorage.getItem("hasSeenIntro");
@@ -63,11 +65,11 @@ function HomePage() {
     }
   }, []);
 
-  if (isLoading) return <div className="p-4">Loading MDRT App...</div>;
+  // if (isLoading) return <div className="p-4">Loading MDRT App...</div>;
 
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
+  // if (error) return <div className="p-4 text-red-500">{error}</div>;
 
-  if (!groupId) return <div className="p-4">No valid group ID found.</div>;
+  // if (!groupId) return <div className="p-4">No valid group ID found.</div>;
 
   if (showIntro) {
     return <LottieIntro onFinish={() => setShowIntro(false)} />;
