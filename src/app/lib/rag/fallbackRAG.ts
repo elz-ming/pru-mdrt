@@ -38,22 +38,23 @@ export async function fallbackRAG(userMessage: string): Promise<string> {
     .find({ _id: { $in: mongoIds } })
     .toArray();
 
-  const context = matchingDocs.map((doc) => doc.text).join("\n\n");
-
-  const finalPrompt = `Answer based on the context below:\n\n${context}\n\nUser: ${userMessage}`;
+  const documents = matchingDocs.map((doc, i) => ({
+    id: doc._id.toString(),
+    data: { text: doc.text },
+  }));
 
   // Step 4: Send context to Cohere chat
   const response = await cohereV2.chat({
     model: "command-a-03-2025",
+    documents,
     messages: [
       {
         role: "system",
-        content:
-          "You are an insurance assistant. Consider all the context retrieved, and provide a short conclusion.",
+        content: "You are an insurance assistant.",
       },
       {
         role: "user",
-        content: finalPrompt,
+        content: userMessage,
       },
     ],
   });
