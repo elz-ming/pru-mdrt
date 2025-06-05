@@ -57,6 +57,8 @@ User message: ${userMessage}
   const contentArray = response.message?.content;
   const content = contentArray?.[0]?.text?.trim();
 
+  console.log("[MCP] Raw tool candidate content:", content);
+
   // 3.1. If no tool call, fallback
   if (!content) {
     const fallback = await fallbackRAG(userMessage);
