@@ -38,7 +38,7 @@ export async function fallbackRAG(userMessage: string): Promise<string> {
     .find({ _id: { $in: mongoIds } })
     .toArray();
 
-  const documents = matchingDocs.map((doc, i) => ({
+  const documents = matchingDocs.map((doc) => ({
     id: doc._id.toString(),
     data: { text: doc.text },
   }));
