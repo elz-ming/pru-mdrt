@@ -1,38 +1,47 @@
-export const tools = [
-  {
-    name: "add_two_numbers",
-    description: "Adds two numbers and returns the result.",
+// lib/tools/toolRegistry.ts
+
+type ToolDefinition = {
+  type: "function";
+  function: {
+    name: string;
+    description: string;
     parameters: {
-      type: "object",
-      properties: {
-        a: {
-          type: "number",
-          description: "The first number to add",
+      type: "object";
+      properties: Record<string, { type: string; description: string }>;
+      required?: string[];
+    };
+  };
+};
+
+export const tools: ToolDefinition[] = [
+  {
+    type: "function",
+    function: {
+      name: "add_two_numbers",
+      description: "Adds two numbers and returns the result.",
+      parameters: {
+        type: "object",
+        properties: {
+          a: { type: "number", description: "The first number" },
+          b: { type: "number", description: "The second number" },
         },
-        b: {
-          type: "number",
-          description: "The second number to add",
-        },
+        required: ["a", "b"],
       },
-      required: ["a", "b"],
     },
   },
   {
-    name: "multiply_two_numbers",
-    description: "Multiplies two numbers and returns the result.",
-    parameters: {
-      type: "object",
-      properties: {
-        x: {
-          type: "number",
-          description: "The first number to multiply",
+    type: "function",
+    function: {
+      name: "multiply_two_numbers",
+      description: "Multiplies two numbers and returns the result.",
+      parameters: {
+        type: "object",
+        properties: {
+          x: { type: "number", description: "The first number" },
+          y: { type: "number", description: "The second number" },
         },
-        y: {
-          type: "number",
-          description: "The second number to multiply",
-        },
+        required: ["x", "y"],
       },
-      required: ["a", "b"],
     },
   },
 ];

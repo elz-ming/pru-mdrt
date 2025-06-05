@@ -26,31 +26,20 @@ export async function handleMCP({
   const newTurn: MemoryMessage = { role: "user", content: userMessage };
   const fullConversation: MemoryMessage[] = [...memory, newTurn];
 
-  // 2. Ask LLM whether to call a tool
-  const toolCallPrompt = `
-You are a smart assistant with access to tools. If the user's message matches a tool, respond in JSON format like:
-{
-  "tool": "<tool_name>",
-  "args": { ... }
-}
-Else, answer naturally.
-
-Available tools:
-${tools.map((t) => `- ${t.name}: ${t.description}`).join("\n")}
-
-User message: ${userMessage}
-`;
-
+  // 2. : Call Cohere chat with tools
   const response = await cohereV2.chat({
     model: "command-a-03-2025",
+    tools, // tools must follow Cohere's { type: 'function', function: {...} } format
     messages: [
       {
         role: "system",
         content:
           "You are an assistant who helps users by either answering naturally or calling tools.",
       },
-      ...fullConversation.map((m) => ({ role: m.role, content: m.content })),
-      { role: "user", content: toolCallPrompt },
+      ...fullConversation.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
     ],
   });
 
