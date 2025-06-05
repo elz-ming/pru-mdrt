@@ -1,11 +1,11 @@
 export type AddTwoNumbersInput = {
-  a: number;
-  b: number;
+  num1: number;
+  num2: number;
 };
 
 export type MultiplyTwoNumbersInput = {
-  a: number;
-  b: number;
+  num1: number;
+  num2: number;
 };
 
 export type ToolInputMap = {

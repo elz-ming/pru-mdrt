@@ -22,10 +22,10 @@ export const tools: ToolDefinition[] = [
       parameters: {
         type: "object",
         properties: {
-          a: { type: "number", description: "The first number" },
-          b: { type: "number", description: "The second number" },
+          num1: { type: "number", description: "The first number" },
+          num2: { type: "number", description: "The second number" },
         },
-        required: ["a", "b"],
+        required: ["num1", "num2"],
       },
     },
   },
@@ -37,10 +37,10 @@ export const tools: ToolDefinition[] = [
       parameters: {
         type: "object",
         properties: {
-          x: { type: "number", description: "The first number" },
-          y: { type: "number", description: "The second number" },
+          num1: { type: "number", description: "The first number" },
+          num2: { type: "number", description: "The second number" },
         },
-        required: ["x", "y"],
+        required: ["num1", "num2"],
       },
     },
   },
