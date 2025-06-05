@@ -58,6 +58,8 @@ export async function handleMCP({
     return fallback;
   }
 
+  console.log("[MCP] Raw tool candidate content:", content);
+
   // 3.2 Try to parse as a tool call
   try {
     const parsed = JSON.parse(content);
