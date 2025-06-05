@@ -2,7 +2,7 @@ import supabaseAdmin from "@/app/lib/supabaseAdmin";
 import { validateData } from "@/app/lib/validateData";
 import { Telegraf } from "telegraf";
 import { NextRequest } from "next/server";
-import { fallbackRAG } from "@/app/lib/rag/fallbackRAG";
+import { handleMCP } from "@/app/lib/mcp/agent";
 
 // === Initialize Bot ===
 const bot = new Telegraf(process.env.BOT_TOKEN!);
@@ -89,8 +89,15 @@ bot.command("webapp", (ctx) => {
 
 // Respond to any plain text message
 bot.on("text", async (ctx) => {
+  const userId = ctx.from?.id?.toString() ?? "";
+  const encodedUserId = Buffer.from(userId).toString("base64");
   const userMessage = ctx.message.text;
-  const reply = await fallbackRAG(userMessage);
+
+  const reply = await handleMCP({
+    userId: encodedUserId,
+    userMessage,
+  });
+
   ctx.reply(reply);
 });
 

@@ -4,7 +4,8 @@ import { tools } from "@/app/lib/tools/toolRegistry";
 import { toolRouter } from "@/app/lib/tools/toolRouter";
 import { ToolInputMap } from "@/app/lib/tools/toolTypes";
 import { getMemory, saveMemory } from "@/app/lib/memory/userMemory";
-import { cohereV2 } from "@/app/lib/llm/cohere"; // wrap this if you haven’t yet
+import { cohereV2 } from "@/app/lib/llm/cohere";
+import { fallbackRAG } from "@/app/lib/rag/fallbackRAG";
 
 type Role = "user" | "assistant";
 
@@ -56,9 +57,17 @@ User message: ${userMessage}
   const contentArray = response.message?.content;
   const content = contentArray?.[0]?.text?.trim();
 
-  if (!content) return "❌ No response from LLM.";
+  // 3.1. If no tool call, fallback
+  if (!content) {
+    const fallback = await fallbackRAG(userMessage);
+    await saveMemory(userId, [
+      newTurn,
+      { role: "assistant", content: fallback },
+    ]);
+    return fallback;
+  }
 
-  // 3. Try to parse as a tool call
+  // 3.2 Try to parse as a tool call
   try {
     const parsed = JSON.parse(content);
 
@@ -66,7 +75,12 @@ User message: ${userMessage}
       const toolFn = toolRouter[parsed.tool as keyof ToolInputMap];
 
       if (!toolFn) {
-        return `⚠️ Tool "${parsed.tool}" is not implemented.`;
+        const fallback = `⚠️ Tool "${parsed.tool}" is not implemented.`;
+        await saveMemory(userId, [
+          newTurn,
+          { role: "assistant", content: fallback },
+        ]);
+        return fallback;
       }
 
       const result = toolFn(parsed.args);
@@ -80,11 +94,11 @@ User message: ${userMessage}
       return result;
     }
   } catch {
-    // Not a tool call, treat as natural language
+    // Not a valid JSON, fallback to RAG
   }
 
-  // 5. Save user + assistant messages as normal
-  await saveMemory(userId, [newTurn, { role: "assistant", content }]);
-
-  return content;
+  // 2. If it's just natural language or parsing fails, fallback to RAG
+  const ragReply = await fallbackRAG(userMessage);
+  await saveMemory(userId, [newTurn, { role: "assistant", content: ragReply }]);
+  return ragReply;
 }
