@@ -26,15 +26,17 @@ export async function handleMCP({
   const newTurn: MemoryMessage = { role: "user", content: userMessage };
   const fullConversation: MemoryMessage[] = [...memory, newTurn];
 
+  console.log("Tools:", tools);
+
   // 2. : Call Cohere chat with tools
   const response = await cohereV2.chat({
     model: "command-a-03-2025",
-    tools, // tools must follow Cohere's { type: 'function', function: {...} } format
+    tools,
     messages: [
       {
         role: "system",
         content:
-          "You are an assistant who helps users by either answering naturally or calling tools.",
+          "You are a smart assistant with access to external tools. If the user's message matches a tool description, use the appropriate tool and return its JSON call.",
       },
       ...fullConversation.map((m) => ({
         role: m.role,
