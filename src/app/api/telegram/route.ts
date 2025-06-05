@@ -1,43 +1,11 @@
 import supabaseAdmin from "@/app/lib/supabaseAdmin";
 import { validateData } from "@/app/lib/validateData";
-
 import { Telegraf } from "telegraf";
 import { NextRequest } from "next/server";
-import { CohereClient, CohereClientV2 } from "cohere-ai";
-import { MongoClient } from "mongodb";
-import { QdrantClient } from "@qdrant/js-client-rest";
-
-type InsuranceChunk = {
-  _id: string;
-  company: string;
-  text: string;
-  source: string;
-  chunk_index: number;
-};
+import { fallbackRAG } from "@/app/lib/rag/fallbackRAG";
 
 // === Initialize Bot ===
 const bot = new Telegraf(process.env.BOT_TOKEN!);
-
-// === Initialize Cohere ===
-const cohereV1 = new CohereClient({
-  token: process.env.COHERE_API_KEY,
-});
-
-const cohereV2 = new CohereClientV2({
-  token: process.env.COHERE_API_KEY,
-});
-
-// === Initialize Qdrant ===
-const qdrant = new QdrantClient({
-  url: process.env.QDRANT_URL!,
-  apiKey: process.env.QDRANT_API_KEY,
-});
-
-// === Initialize MongoDB and get collection ===
-const mongo = new MongoClient(process.env.MONGO_URI!);
-await mongo.connect();
-const mongo_database = mongo.db("insurance_kb");
-const mongo_collection = mongo_database.collection<InsuranceChunk>("chunks");
 
 // Commands
 bot.command("start", async (ctx) => {
@@ -122,81 +90,8 @@ bot.command("webapp", (ctx) => {
 // Respond to any plain text message
 bot.on("text", async (ctx) => {
   const userMessage = ctx.message.text;
-
-  // STEP 1: Get the embedding
-  const embedResponse = await cohereV1.v2.embed({
-    texts: [userMessage],
-    model: "embed-v4.0",
-    inputType: "search_query",
-    embeddingTypes: ["float"],
-    outputDimension: 1024,
-  });
-  const queryEmbedding = embedResponse.embeddings?.float?.[0];
-
-  if (!queryEmbedding) {
-    ctx.reply("❌ Failed to generate embedding.");
-    return;
-  }
-
-  console.log(queryEmbedding);
-
-  // STEP 2: Search Qdrant
-  const searchResults = await qdrant.search("insurance_chunks", {
-    vector: queryEmbedding,
-    limit: 8,
-  });
-
-  const mongoIds = searchResults
-    .map((r) => r.payload?.mongo_id)
-    .filter((id): id is string => !!id) as string[];
-
-  if (mongoIds.length === 0) {
-    ctx.reply("❌ No relevant documents found.");
-    return;
-  }
-
-  console.log("Got the mongoIds from QDrant");
-
-  // STEP 3: Fetch full chunks from MongoDB
-  const matchingDocs = await mongo_collection
-    .find({ _id: { $in: mongoIds } })
-    .toArray();
-
-  const context = matchingDocs.map((doc) => doc.text).join("\n\n");
-
-  console.log("Got the mongoDocs from MongoDB");
-
-  // STEP 4: Send context + message to Cohere
-  const finalPrompt = `Answer based on the context below:\n\n${context}\n\nUser: ${userMessage}`;
-
-  console.log(`This is the final prompt: ${finalPrompt}`);
-
-  const response = await cohereV2.chat({
-    model: "command-a-03-2025",
-    messages: [
-      {
-        role: "system",
-        content:
-          "You are an insurance assistant. Consider all the context retrieved, and provide a short conclusion.",
-      },
-      { role: "user", content: finalPrompt },
-    ],
-  });
-
-  const contentArray = response.message?.content;
-
-  if (!Array.isArray(contentArray)) {
-    ctx.reply("❌ Unexpected response format.");
-    return;
-  }
-
-  const replyText = contentArray
-    .filter((c) => c.type === "text")
-    .map((c) => c.text)
-    .join(" ")
-    .trim();
-
-  ctx.reply(replyText || "🤖 Sorry, no response.");
+  const reply = await fallbackRAG(userMessage);
+  ctx.reply(reply);
 });
 
 // Handle Telegram POST updates
