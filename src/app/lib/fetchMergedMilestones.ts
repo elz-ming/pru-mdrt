@@ -10,8 +10,6 @@ export interface EnrichedMilestone extends FirestoreMilestone {
   completionRate: number; // You can leave this as 0 for now
 }
 
-console.log("John");
-
 export async function fetchMergedMilestones(
   encodedId: string
 ): Promise<EnrichedMilestone[]> {
