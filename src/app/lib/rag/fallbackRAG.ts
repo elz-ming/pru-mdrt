@@ -3,7 +3,6 @@
 import { cohereV1, cohereV2 } from "@/app/lib/llm/cohere";
 import { qdrantClient } from "@/app/lib/qdrant/qdrantClient";
 import { insuranceChunksCollection } from "@/app/lib/mongo/insuranceChunks";
-import { ObjectId } from "mongodb";
 
 export async function fallbackRAG(userMessage: string): Promise<string> {
   // Step 1: Get embedding from Cohere
