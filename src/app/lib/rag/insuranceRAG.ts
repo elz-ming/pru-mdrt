@@ -56,6 +56,8 @@ export async function insuranceRAG(userMessage: string): Promise<string> {
     documents?.[0]?.data?.text?.slice(0, 100)
   );
 
+  console.log(documents);
+
   // Step 4: Send context to Cohere chat
   const response = await cohereV2.chat({
     model: "command-a-03-2025",
