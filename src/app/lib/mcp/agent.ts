@@ -74,7 +74,7 @@ export async function handleMCP({
         ]);
         return result;
       }
-    } catch (err) {
+    } catch (_err) {
       console.warn("[MCP] Failed to parse tool response as JSON");
     }
   }
