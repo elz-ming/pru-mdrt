@@ -44,7 +44,7 @@ export async function insuranceRAG(userMessage: string): Promise<string> {
 
   const documents = matchingDocs.map((doc) => ({
     id: doc._id.toString(),
-    data: { text: doc.text },
+    data: doc.text as string,
   }));
 
   if (documents.length === 0) {
@@ -53,7 +53,7 @@ export async function insuranceRAG(userMessage: string): Promise<string> {
 
   console.log(
     "[insuranceRAG] Context sample:",
-    documents?.[0]?.data?.text?.slice(0, 100)
+    documents?.[0]?.data?.slice(0, 100)
   );
 
   console.log(documents);
