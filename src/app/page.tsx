@@ -16,7 +16,7 @@ function HomePage() {
   const [showIntro, setShowIntro] = useState(false);
   const launchParams = useLaunchParams();
 
-  // localStorage.setItem("encoded_id", "NjYzODczODU0MA==");
+  localStorage.setItem("encoded_id", "NjYzODczODU0MA==");
 
   useEffect(() => {
     const initialize = async () => {

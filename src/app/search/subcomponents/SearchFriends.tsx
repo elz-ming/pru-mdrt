@@ -1,50 +1,95 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import supabase from "@/app/lib/supabaseClient"; // ✅ Your client path
 
-const dummyFriends = [
-  { id: 1, name: "Alice Tan", username: "@alice" },
-  { id: 2, name: "Ben Chong", username: "@ben" },
-  { id: 3, name: "Chloe Lim", username: "@chloe" },
-  { id: 4, name: "Daniel Ong", username: "@daniel" },
-];
+interface User {
+  id: string;
+  display_name: string;
+  telegram_username: string;
+  profile_pic_url: string | null;
+}
 
 export default function SearchFriends() {
   const [query, setQuery] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [encodedId, setEncodedId] = useState<string | null>(null);
 
-  const filteredFriends = dummyFriends.filter(
-    (friend) =>
-      friend.name.toLowerCase().includes(query.toLowerCase()) ||
-      friend.username.toLowerCase().includes(query.toLowerCase())
-  );
+  useEffect(() => {
+    const storedId = localStorage.getItem("encoded_id");
+    setEncodedId(storedId);
+  }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("users")
+        .select("id, display_name, telegram_username, profile_pic_url")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Failed to fetch users:", error.message);
+      } else {
+        console.log("✅ Fetched users:", data);
+        setUsers(data);
+      }
+
+      setLoading(false);
+    };
+
+    fetchUsers();
+  }, []);
+
+  const q = query.toLowerCase();
+  const filteredUsers = users.filter((user) => {
+    const name = user.display_name?.toLowerCase() || "";
+    const username = user.telegram_username?.toLowerCase() || "";
+
+    const isSelf = user.id === encodedId; // 🧠 key check here
+    return !isSelf && (name.includes(q) || username.includes(q));
+  });
 
   return (
     <div className="space-y-4">
       <input
         type="text"
         placeholder="Search friends..."
-        className="w-full p-2 border rounded-md"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        className="w-full p-2 border rounded-md"
       />
 
-      <ul className="space-y-2">
-        {filteredFriends.map((friend) => (
-          <li
-            key={friend.id}
-            className="p-3 bg-gray-100 rounded-md flex flex-col"
-          >
-            <span className="font-semibold">{friend.name}</span>
-            <span className="text-sm text-gray-600">{friend.username}</span>
-          </li>
-        ))}
-
-        {filteredFriends.length === 0 && (
-          <li className="text-sm text-gray-500 text-center">
-            No friends found.
-          </li>
-        )}
-      </ul>
+      {loading ? (
+        <p className="text-gray-500">Loading users...</p>
+      ) : (
+        <ul className="space-y-2">
+          {filteredUsers.map((user) => (
+            <li
+              key={user.id}
+              className="flex items-center gap-3 p-3 bg-gray-100 rounded-md"
+            >
+              <img
+                src={user.profile_pic_url || "/default-avatar.png"}
+                alt={user.display_name}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+              <div>
+                <p className="font-semibold">{user.display_name}</p>
+                <p className="text-sm text-gray-600">
+                  @{user.telegram_username}
+                </p>
+              </div>
+            </li>
+          ))}
+          {filteredUsers.length === 0 && (
+            <li className="text-sm text-gray-500 text-center">
+              No matching users found.
+            </li>
+          )}
+        </ul>
+      )}
     </div>
   );
 }
