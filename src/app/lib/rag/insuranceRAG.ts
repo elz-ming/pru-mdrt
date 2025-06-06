@@ -48,10 +48,7 @@ export async function insuranceRAG(userMessage: string): Promise<string> {
     return "❌ No matching documents retrieved from database.";
   }
 
-  console.log(
-    "[insuranceRAG] Context sample:",
-    documents?.[0]?.data?.slice(0, 100)
-  );
+  console.log("[insuranceRAG] Context sample:", documents?.[0]?.slice(0, 100));
 
   console.log(documents);
 
