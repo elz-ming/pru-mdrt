@@ -21,21 +21,23 @@ bot.command("start", async (ctx) => {
     .from("users")
     .select("id")
     .eq("encoded_id", encodedUserId)
-    .single();
+    .maybeSingle();
 
   if (error) console.error("SELECT error:", error);
 
   // If not exist, insert new user
   if (error || !data) {
     // === Try to fetch Telegram profile photo ===
-    let profileUrl: string | null = null;
+    let profilePicUrl: string | null = null;
 
     try {
       const photosRes = await fetch(
         `${TELEGRAM_API_BASE}/getUserProfilePhotos?user_id=${userId}&limit=1`
       );
       const photosData = await photosRes.json();
+      console.log("photosData:", photosData);
       const fileId = photosData.result?.photos?.[0]?.[0]?.file_id;
+      console.log("fileId:", fileId);
 
       if (fileId) {
         const filePathRes = await fetch(
@@ -52,7 +54,7 @@ bot.command("start", async (ctx) => {
           access: "public",
         });
 
-        profileUrl = uploaded.url;
+        profilePicUrl = uploaded.url;
       }
     } catch (err) {
       console.warn("⚠️ Could not fetch or upload Telegram profile photo:", err);
@@ -62,7 +64,7 @@ bot.command("start", async (ctx) => {
       {
         encoded_id: encodedUserId,
         telegram_username: username,
-        profile_url: profileUrl,
+        profile_pic_url: profilePicUrl,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       },
