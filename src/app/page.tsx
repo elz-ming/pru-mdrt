@@ -22,31 +22,32 @@ function HomePage() {
     const initialize = async () => {
       try {
         if (launchParams) {
-          try {
-            const encodedGroupId =
-              launchParams.tgWebAppStartParam ??
-              launchParams?.tgWebAppData?.start_param ??
-              launchParams?.startapp ??
-              null;
+          const encodedGroupId =
+            launchParams.tgWebAppStartParam ??
+            launchParams?.tgWebAppData?.start_param ??
+            launchParams?.startapp ??
+            null;
+
+          if (encodedGroupId) {
+            // ✅ Clear only your app's localStorage keys
+            localStorage.removeItem("encoded_id");
+            localStorage.removeItem("encoded_id_ready");
+            localStorage.removeItem("hasSeenIntro");
+
+            // ✅ Store fresh encoded ID
+            localStorage.setItem("encoded_id", encodedGroupId as string);
+            localStorage.setItem("encoded_id_ready", "true");
 
             const decodedGroupId = atob(encodedGroupId as string);
-            console.log("Decoded Group ID:", decodedGroupId);
-
             setGroupId(decodedGroupId);
-
-            if (typeof encodedGroupId === "string") {
-              localStorage.setItem("encoded_id", encodedGroupId as string);
-            }
-          } catch (error) {
-            console.error("Error decoding group ID:", error);
-            setError("Invalid group ID format");
+          } else {
+            setError("Missing group ID");
           }
         } else {
-          console.log("No launchParams available");
-          setError(`launchParams: ${JSON.stringify(launchParams)}`);
+          setError(`launchParams missing: ${JSON.stringify(launchParams)}`);
         }
-      } catch (error) {
-        console.error("Error in initializeComponent:", error);
+      } catch (err) {
+        console.error("Error in initializeComponent:", err);
         setError("An error occurred while initializing the component");
       } finally {
         setIsLoading(false);
