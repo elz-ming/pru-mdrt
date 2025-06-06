@@ -8,7 +8,14 @@ export type MultiplyTwoNumbersInput = {
   num2: number;
 };
 
+export type RetrieveInsuranceInfoInput = {
+  query: string;
+};
+
 export type ToolInputMap = {
-  add_two_numbers: AddTwoNumbersInput;
-  multiply_two_numbers: MultiplyTwoNumbersInput;
+  add_two_numbers: (args: AddTwoNumbersInput) => string;
+  multiply_two_numbers: (args: MultiplyTwoNumbersInput) => string;
+  retrieve_insurance_info: (
+    args: RetrieveInsuranceInfoInput
+  ) => Promise<string>;
 };

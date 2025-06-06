@@ -5,7 +5,6 @@ import { toolRouter } from "@/app/lib/tools/toolRouter";
 import { ToolInputMap } from "@/app/lib/tools/toolTypes";
 import { getMemory, saveMemory } from "@/app/lib/memory/userMemory";
 import { cohereV2 } from "@/app/lib/llm/cohere";
-import { fallbackRAG } from "@/app/lib/rag/fallbackRAG";
 
 type Role = "user" | "assistant";
 
@@ -26,7 +25,7 @@ export async function handleMCP({
   const newTurn: MemoryMessage = { role: "user", content: userMessage };
   const fullConversation: MemoryMessage[] = [...memory, newTurn];
 
-  console.log("Tools:", tools);
+  console.log("[MCP] Handling user", userId, ":", userMessage);
 
   // 2. : Call Cohere chat with tools
   const response = await cohereV2.chat({
@@ -36,7 +35,7 @@ export async function handleMCP({
       {
         role: "system",
         content:
-          "You are a smart assistant with access to external tools. If the user's message matches a tool description, use the appropriate tool and return its JSON call.",
+          "You are a smart assistant. If the user's message matches a tool description, respond with a valid JSON tool call. Otherwise, reply normally.",
       },
       ...fullConversation.map((m) => ({
         role: m.role,
@@ -50,50 +49,41 @@ export async function handleMCP({
 
   console.log("[MCP] Raw tool candidate content:", content);
 
-  // 3.1. If no tool call, fallback
-  if (!content) {
-    const fallback = await fallbackRAG(userMessage);
-    await saveMemory(userId, [
-      newTurn,
-      { role: "assistant", content: fallback },
-    ]);
-    return fallback;
-  }
+  // 3. If tool call is present, try to parse and route it
+  if (content) {
+    try {
+      const parsed = JSON.parse(content);
 
-  console.log("[MCP] Raw tool candidate content:", content);
+      if (parsed.tool && parsed.args) {
+        const toolFn = toolRouter[parsed.tool as keyof ToolInputMap];
 
-  // 3.2 Try to parse as a tool call
-  try {
-    const parsed = JSON.parse(content);
+        if (!toolFn) {
+          const error = `⚠️ Tool "${parsed.tool}" is not implemented.`;
+          await saveMemory(userId, [
+            newTurn,
+            { role: "assistant", content: error },
+          ]);
+          return error;
+        }
 
-    if (parsed.tool && parsed.args) {
-      const toolFn = toolRouter[parsed.tool as keyof ToolInputMap];
+        const result = await toolFn(parsed.args);
 
-      if (!toolFn) {
-        const fallback = `⚠️ Tool "${parsed.tool}" is not implemented.`;
         await saveMemory(userId, [
           newTurn,
-          { role: "assistant", content: fallback },
+          { role: "assistant", content: result },
         ]);
-        return fallback;
+        return result;
       }
-
-      const result = toolFn(parsed.args);
-
-      // 4. Save both turns to memory
-      await saveMemory(userId, [
-        newTurn,
-        { role: "assistant", content: result },
-      ]);
-
-      return result;
+    } catch (err) {
+      console.warn("[MCP] Failed to parse tool response as JSON");
     }
-  } catch {
-    // Not a valid JSON, fallback to RAG
   }
 
-  // 2. If it's just natural language or parsing fails, fallback to RAG
-  const ragReply = await fallbackRAG(userMessage);
-  await saveMemory(userId, [newTurn, { role: "assistant", content: ragReply }]);
-  return ragReply;
+  // 4. Fallback to RAG if no tool or failed JSON parse
+  const fallback = await toolRouter["retrieve_insurance_info"]({
+    query: userMessage,
+  });
+
+  await saveMemory(userId, [newTurn, { role: "assistant", content: fallback }]);
+  return fallback;
 }

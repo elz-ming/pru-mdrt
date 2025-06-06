@@ -44,4 +44,21 @@ export const tools: ToolDefinition[] = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "retrieve_insurance_info",
+      description: "Search insurance knowledge base to answer user questions.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: {
+            type: "string",
+            description: "The question to search in the insurance documents",
+          },
+        },
+        required: ["query"],
+      },
+    },
+  },
 ];
