@@ -34,8 +34,12 @@ export async function handleMCP({
     messages: [
       {
         role: "system",
-        content:
-          "You are a smart assistant. If the user's message matches a tool description, respond with a valid JSON tool call. Otherwise, reply normally.",
+        content: `You are a smart assistant. If the user's query matches one of the tool functions, return ONLY a JSON object like:
+{
+  "tool": "tool_name",
+  "args": { "key1": "value1", "key2": "value2" }
+}
+If there's no tool to call, respond with natural language.`,
       },
       ...fullConversation.map((m) => ({
         role: m.role,

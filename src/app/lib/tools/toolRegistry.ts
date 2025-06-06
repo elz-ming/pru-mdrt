@@ -18,7 +18,7 @@ export const tools: ToolDefinition[] = [
     type: "function",
     function: {
       name: "add_two_numbers",
-      description: "Adds two numbers and returns the result.",
+      description: "Adds two numbers together.",
       parameters: {
         type: "object",
         properties: {
