@@ -1,83 +1,69 @@
 "use client";
 
-import ActivityCard from "./ActivityCard"; // Adjust path as needed
+import { useEffect, useState } from "react";
+import ActivityCard from "./ActivityCard";
+import supabase from "@/app/lib/supabaseClient";
 
-// Dictionary of 10 sample activities
-const ACTIVITY_DICTIONARY = [
-  {
-    name: "Lin Zhenming",
-    activityTitle: "Closed 3 new policy deals",
-    activityDescription: "Hit his weekly target in just 2 days!",
-    profilePicUrl: "",
-  },
-  {
-    name: "Vanessa Cheong",
-    activityTitle: "Shared a client success story",
-    activityDescription: "A heartfelt story about a young family.",
-    profilePicUrl: "",
-  },
-
-  {
-    name: "Cloven",
-    activityTitle: "Achieved MDRT milestone",
-    activityDescription: "Officially hit the 2025 MDRT qualification.",
-    profilePicUrl: "",
-  },
-  {
-    name: "Pei Shih",
-    activityTitle: "Won the weekly challenge",
-    activityDescription: "Ranked #1 in team leaderboard this week.",
-    profilePicUrl: "",
-  },
-  {
-    name: "Rithik",
-    activityTitle: "Hosted a financial wellness talk",
-    activityDescription: "Educated over 50 attendees on budgeting.",
-    profilePicUrl: "",
-  },
-  {
-    name: "Ze Yan",
-    activityTitle: "Joined a new agency team",
-    activityDescription: "Excited to kickstart his new journey!",
-    profilePicUrl: "",
-  },
-  {
-    name: "Nikitha",
-    activityTitle: "Referred a new client",
-    activityDescription: "Generated a quality lead through referral.",
-    profilePicUrl: "",
-  },
-  {
-    name: "Jun Wen",
-    activityTitle: "Updated her portfolio",
-    activityDescription: "Revamped her offerings and visuals.",
-    profilePicUrl: "",
-  },
-  {
-    name: "Hannah",
-    activityTitle: "Completed a training course",
-    activityDescription: "Graduated from the digital prospecting bootcamp.",
-    profilePicUrl: "",
-  },
-  {
-    name: "Elizabeth",
-    activityTitle: "Posted a motivational quote",
-    activityDescription: `"Success is not final; failure is not fatal."`,
-    profilePicUrl: "",
-  },
-];
+interface Post {
+  id: string;
+  content: string;
+  image_url?: string;
+  created_at: string;
+  users: {
+    display_name: string;
+    profile_pic_url?: string;
+  };
+}
 
 export default function ActivityFeed() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const { data, error } = await supabase
+        .from("posts")
+        .select(
+          `
+          id,
+          content,
+          image_url,
+          created_at,
+          users:author_id (
+            display_name,
+            profile_pic_url
+          )
+        `
+        )
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching posts:", error.message);
+        return;
+      }
+
+      setPosts((data as unknown as Post[]) || []);
+      setLoading(false);
+    };
+
+    fetchPosts();
+  }, []);
+
+  if (loading) {
+    return <p className="text-center mt-4">Loading feed...</p>;
+  }
+
   return (
     <div className="h-full overflow-auto z-20">
       <ul className="flex flex-col gap-4">
-        {ACTIVITY_DICTIONARY.map((post, idx) => (
-          <li key={idx}>
+        {posts.map((post) => (
+          <li key={post.id}>
             <ActivityCard
-              profilePicUrl={post.profilePicUrl}
-              name={post.name}
-              activityTitle={post.activityTitle}
-              activityDescription={post.activityDescription}
+              name={post.users?.display_name || "Anonymous"}
+              profilePicUrl={post.users?.profile_pic_url || ""}
+              activityDescription={post.content}
+              activityPicUrl={post.image_url}
+              createdAt={post.created_at}
             />
           </li>
         ))}

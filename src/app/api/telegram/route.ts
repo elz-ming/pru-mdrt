@@ -39,9 +39,7 @@ bot.command("start", async (ctx) => {
         `${TELEGRAM_API_BASE}/getUserProfilePhotos?user_id=${userId}&limit=1`
       );
       const photosData = await photosRes.json();
-      console.log("photosData:", photosData);
       const fileId = photosData.result?.photos?.[0]?.[0]?.file_id;
-      console.log("fileId:", fileId);
 
       if (fileId) {
         const filePathRes = await fetch(
