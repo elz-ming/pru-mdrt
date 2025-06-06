@@ -6,12 +6,18 @@ import Image from "next/image";
 import { ArrowLeft } from "lucide-react"; // or any icon you prefer
 import supabase from "@/app/lib/supabaseClient";
 
+type User = {
+  display_name: string;
+  telegram_username: string;
+  profile_pic_url?: string;
+};
+
 export default function UserProfile() {
   const router = useRouter();
   const { encodedId } = useParams();
   const decodedId = decodeURIComponent(encodedId as string);
 
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followerCount, setFollowerCount] = useState(0);
