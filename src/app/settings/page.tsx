@@ -9,7 +9,7 @@ export default function SettingsPage() {
   return (
     <>
       {/* Custom header with back button */}
-      <header className="flex items-center gap-2 mb-4">
+      <header className="flex w-full items-center gap-4 px-4 py-3 bg-white">
         <button onClick={() => router.back()}>
           <ArrowLeft size={40} />
         </button>

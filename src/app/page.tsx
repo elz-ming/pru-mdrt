@@ -16,8 +16,6 @@ function HomePage() {
   const [showIntro, setShowIntro] = useState(false);
   const launchParams = useLaunchParams();
 
-  // localStorage.setItem("encoded_id", "NjYzODczODU0MA==");
-
   useEffect(() => {
     const initialize = async () => {
       try {
@@ -37,7 +35,6 @@ function HomePage() {
             // ✅ Store fresh encoded ID
             localStorage.setItem("encoded_id", encodedGroupId as string);
             localStorage.setItem("encoded_id_ready", "true");
-            localStorage.setItem("hasSeenIntro", "false");
 
             const decodedGroupId = atob(encodedGroupId as string);
             setGroupId(decodedGroupId);
@@ -60,6 +57,8 @@ function HomePage() {
 
   useEffect(() => {
     const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+
+    localStorage.setItem("encoded_id", "NjYzODczODU0MA==");
 
     if (!hasSeenIntro) {
       setShowIntro(true);
