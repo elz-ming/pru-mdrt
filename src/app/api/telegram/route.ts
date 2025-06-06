@@ -56,6 +56,7 @@ bot.command("start", async (ctx) => {
 
         const uploaded = await put(`${encodedUserId}.jpg`, buffer, {
           access: "public",
+          allowOverwrite: true,
         });
 
         profilePicUrl = uploaded.url;
