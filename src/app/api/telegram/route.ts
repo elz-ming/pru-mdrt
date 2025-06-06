@@ -14,6 +14,10 @@ bot.command("start", async (ctx) => {
   const username = ctx.from?.username ?? "";
   const encodedUserId = Buffer.from(userId).toString("base64");
 
+  const firstName = ctx.from?.first_name ?? "";
+  const lastName = ctx.from?.last_name ?? "";
+  const displayName = `${firstName} ${lastName}`.trim();
+
   let response: string;
 
   // Check if user exists
@@ -64,6 +68,7 @@ bot.command("start", async (ctx) => {
       {
         encoded_id: encodedUserId,
         telegram_username: username,
+        display_name: displayName,
         profile_pic_url: profilePicUrl,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
