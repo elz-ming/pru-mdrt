@@ -37,6 +37,7 @@ function HomePage() {
             // ✅ Store fresh encoded ID
             localStorage.setItem("encoded_id", encodedGroupId as string);
             localStorage.setItem("encoded_id_ready", "true");
+            localStorage.setItem("hasSeenIntro", "false");
 
             const decodedGroupId = atob(encodedGroupId as string);
             setGroupId(decodedGroupId);
