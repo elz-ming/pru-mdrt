@@ -14,46 +14,46 @@ function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIntro, setShowIntro] = useState(false);
-  // const launchParams = useLaunchParams();
+  const launchParams = useLaunchParams();
 
-  // useEffect(() => {
-  //   const initialize = async () => {
-  //     try {
-  //       if (launchParams) {
-  //         const encodedGroupId =
-  //           launchParams.tgWebAppStartParam ??
-  //           launchParams?.tgWebAppData?.start_param ??
-  //           launchParams?.startapp ??
-  //           null;
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        if (launchParams) {
+          const encodedGroupId =
+            launchParams.tgWebAppStartParam ??
+            launchParams?.tgWebAppData?.start_param ??
+            launchParams?.startapp ??
+            null;
 
-  //         if (encodedGroupId) {
-  //           // ✅ Clear only your app's localStorage keys
-  //           localStorage.removeItem("encoded_id");
-  //           localStorage.removeItem("encoded_id_ready");
-  //           localStorage.removeItem("hasSeenIntro");
+          if (encodedGroupId) {
+            // ✅ Clear only your app's localStorage keys
+            localStorage.removeItem("encoded_id");
+            localStorage.removeItem("encoded_id_ready");
+            localStorage.removeItem("hasSeenIntro");
 
-  //           // ✅ Store fresh encoded ID
-  //           localStorage.setItem("encoded_id", encodedGroupId as string);
-  //           localStorage.setItem("encoded_id_ready", "true");
+            // ✅ Store fresh encoded ID
+            localStorage.setItem("encoded_id", encodedGroupId as string);
+            localStorage.setItem("encoded_id_ready", "true");
 
-  //           const decodedGroupId = atob(encodedGroupId as string);
-  //           setGroupId(decodedGroupId);
-  //         } else {
-  //           setError("Missing group ID");
-  //         }
-  //       } else {
-  //         setError(`launchParams missing: ${JSON.stringify(launchParams)}`);
-  //       }
-  //     } catch (err) {
-  //       console.error("Error in initializeComponent:", err);
-  //       setError("An error occurred while initializing the component");
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
+            const decodedGroupId = atob(encodedGroupId as string);
+            setGroupId(decodedGroupId);
+          } else {
+            setError("Missing group ID");
+          }
+        } else {
+          setError(`launchParams missing: ${JSON.stringify(launchParams)}`);
+        }
+      } catch (err) {
+        console.error("Error in initializeComponent:", err);
+        setError("An error occurred while initializing the component");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  //   initialize();
-  // }, [launchParams]);
+    initialize();
+  }, [launchParams]);
 
   useEffect(() => {
     const hasSeenIntro = localStorage.getItem("hasSeenIntro");
@@ -62,15 +62,15 @@ function HomePage() {
 
     if (!hasSeenIntro) {
       setShowIntro(true);
-      localStorage.setItem("hasSeenIntro", "true"); // Set flag
+      localStorage.setItem("hasSeenIntro", "true");
     }
   }, []);
 
-  // if (isLoading) return <div className="p-4">Loading MDRT App...</div>;
+  if (isLoading) return <div className="p-4">Loading MDRT App...</div>;
 
-  // if (error) return <div className="p-4 text-red-500">{error}</div>;
+  if (error) return <div className="p-4 text-red-500">{error}</div>;
 
-  // if (!groupId) return <div className="p-4">No valid group ID found.</div>;
+  if (!groupId) return <div className="p-4">No valid group ID found.</div>;
 
   if (showIntro) {
     return <LottieIntro onFinish={() => setShowIntro(false)} />;
