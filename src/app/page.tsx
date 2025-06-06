@@ -58,7 +58,8 @@ function HomePage() {
   useEffect(() => {
     const hasSeenIntro = localStorage.getItem("hasSeenIntro");
 
-    localStorage.setItem("encoded_id", "NjYzODczODU0MA==");
+    // For Dev
+    // localStorage.setItem("encoded_id", "NjYzODczODU0MA==");
 
     if (!hasSeenIntro) {
       setShowIntro(true);
