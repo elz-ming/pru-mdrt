@@ -5,6 +5,8 @@ import { qdrantClient } from "@/app/lib/qdrant/qdrantClient";
 import { insuranceChunksCollection } from "@/app/lib/mongo/insuranceChunks";
 
 export async function insuranceRAG(userMessage: string): Promise<string> {
+  console.log("[insuranceRAG] Query:", userMessage);
+
   // Step 1: Get embedding from Cohere
   const embedResponse = await cohereV1.v2.embed({
     texts: [userMessage],
@@ -33,6 +35,8 @@ export async function insuranceRAG(userMessage: string): Promise<string> {
     return "❌ No relevant documents found.";
   }
 
+  console.log("[insuranceRAG] Matching Mongo IDs:", mongoIds);
+
   // Step 3: Retrieve full text chunks from MongoDB
   const matchingDocs = await insuranceChunksCollection
     .find({ _id: { $in: mongoIds } })
@@ -43,6 +47,15 @@ export async function insuranceRAG(userMessage: string): Promise<string> {
     data: { text: doc.text },
   }));
 
+  if (documents.length === 0) {
+    return "❌ No matching documents retrieved from database.";
+  }
+
+  console.log(
+    "[insuranceRAG] Context sample:",
+    documents?.[0]?.data?.text?.slice(0, 100)
+  );
+
   // Step 4: Send context to Cohere chat
   const response = await cohereV2.chat({
     model: "command-a-03-2025",
@@ -50,7 +63,8 @@ export async function insuranceRAG(userMessage: string): Promise<string> {
     messages: [
       {
         role: "system",
-        content: "You are an insurance assistant.",
+        content:
+          "You are an insurance expert assistant. Use the provided documents to answer the user's question clearly and concisely.",
       },
       {
         role: "user",

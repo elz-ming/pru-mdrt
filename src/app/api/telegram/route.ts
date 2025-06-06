@@ -93,8 +93,6 @@ bot.on("text", async (ctx) => {
   const encodedUserId = Buffer.from(userId).toString("base64");
   const userMessage = ctx.message.text;
 
-  console.log(`[MCP] Handling user ${encodedUserId}: ${userMessage}`);
-
   const reply = await handleMCP({
     userId: encodedUserId,
     userMessage,
