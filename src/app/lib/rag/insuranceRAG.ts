@@ -42,10 +42,7 @@ export async function insuranceRAG(userMessage: string): Promise<string> {
     .find({ _id: { $in: mongoIds } })
     .toArray();
 
-  const documents = matchingDocs.map((doc) => ({
-    id: doc._id.toString(),
-    data: doc.text as string,
-  }));
+  const documents = matchingDocs.map((doc) => doc.text as string);
 
   if (documents.length === 0) {
     return "❌ No matching documents retrieved from database.";
