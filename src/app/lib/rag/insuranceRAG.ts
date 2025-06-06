@@ -42,17 +42,19 @@ export async function insuranceRAG(userMessage: string): Promise<string> {
     .find({ _id: { $in: mongoIds } })
     .toArray();
 
-  const documents = matchingDocs.map((doc) => doc.text as string);
+  const documents = matchingDocs
+    .map((doc) => (typeof doc.text === "string" ? doc.text.trim() : ""))
+    .filter((text) => text.length > 0);
 
   if (documents.length === 0) {
     return "❌ No matching documents retrieved from database.";
   }
 
-  console.log("[insuranceRAG] Context sample:", documents?.[0]?.slice(0, 100));
-
-  console.log(documents);
-
   // Step 4: Send context to Cohere chat
+  const context = documents.join("\n\n");
+
+  const finalPrompt = `Context:\n${context}\n\nUser question: ${userMessage}`;
+
   const response = await cohereV2.chat({
     model: "command-a-03-2025",
     documents,
@@ -64,7 +66,7 @@ export async function insuranceRAG(userMessage: string): Promise<string> {
       },
       {
         role: "user",
-        content: userMessage,
+        content: finalPrompt,
       },
     ],
   });
