@@ -18,18 +18,23 @@ export default function SearchPage() {
 
   return (
     <>
-      {/* Custom header with back button */}
-      <header className="flex items-center gap-2 mb-4">
-        <button onClick={() => router.back()}>
-          <ArrowLeft size={40} />
-        </button>
-        <h1 className="text-xl font-bold">Search</h1>
+      <header className="bg-white">
+        {/* Row 1: Back button and title */}
+        <div className="flex w-full items-center gap-4 px-4 py-3">
+          <button onClick={() => router.back()}>
+            <ArrowLeft size={28} />
+          </button>
+          <h1 className="text-2xl font-bold">Search</h1>
+        </div>
+
+        {/* Row 2: Tabs */}
         <SubHeaderTabs
           tabs={tabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
       </header>
+
       <main>
         <div className="px-4 py-2">
           {activeTab === "friends" && <SearchFriends />}

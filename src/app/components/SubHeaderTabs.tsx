@@ -17,7 +17,7 @@ export default function SubHeaderTabs({
   setActiveTab: (val: string) => void;
 }) {
   return (
-    <div className="flex justify-around border-b border-gray-300 mt-16">
+    <div className="flex justify-around w-full border-b border-gray-300">
       {tabs.map((tab) => (
         <button
           key={tab.value}

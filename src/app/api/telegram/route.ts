@@ -2,8 +2,11 @@ import supabaseAdmin from "@/app/lib/supabaseAdmin";
 import { validateData } from "@/app/lib/validateData";
 import { Telegraf } from "telegraf";
 import { NextRequest } from "next/server";
+import { put } from "@vercel/blob";
+
 // === Initialize Bot ===
 const bot = new Telegraf(process.env.BOT_TOKEN!);
+const TELEGRAM_API_BASE = `https://api.telegram.org/bot${process.env.BOT_TOKEN}`;
 
 // Commands
 bot.command("start", async (ctx) => {
@@ -24,6 +27,37 @@ bot.command("start", async (ctx) => {
 
   // If not exist, insert new user
   if (error || !data) {
+    // === Try to fetch Telegram profile photo ===
+    let profileUrl: string | null = null;
+
+    try {
+      const photosRes = await fetch(
+        `${TELEGRAM_API_BASE}/getUserProfilePhotos?user_id=${userId}&limit=1`
+      );
+      const photosData = await photosRes.json();
+      const fileId = photosData.result?.photos?.[0]?.[0]?.file_id;
+
+      if (fileId) {
+        const filePathRes = await fetch(
+          `${TELEGRAM_API_BASE}/getFile?file_id=${fileId}`
+        );
+        const filePathData = await filePathRes.json();
+        const filePath = filePathData.result.file_path;
+        const fileUrl = `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${filePath}`;
+
+        const fileResponse = await fetch(fileUrl);
+        const buffer = Buffer.from(await fileResponse.arrayBuffer());
+
+        const uploaded = await put(`${encodedUserId}.jpg`, buffer, {
+          access: "public",
+        });
+
+        profileUrl = uploaded.url;
+      }
+    } catch (err) {
+      console.warn("⚠️ Could not fetch or upload Telegram profile photo:", err);
+    }
+
     const { error: insertError } = await supabaseAdmin.from("users").insert([
       {
         encoded_id: encodedUserId,

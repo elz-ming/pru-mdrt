@@ -11,7 +11,7 @@ export default function HeaderBar({ title }: { title: string }) {
       <h1 className="text-2xl font-semibold">{title}</h1>
       <div className="flex items-center gap-4">
         <button onClick={() => router.push("/search")}>
-          <Search size={26} />
+          <Search size={28} />
         </button>
         <button onClick={() => router.push("/settings")}>
           <Settings size={28} />
