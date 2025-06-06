@@ -62,6 +62,7 @@ bot.command("start", async (ctx) => {
       {
         encoded_id: encodedUserId,
         telegram_username: username,
+        profile_url: profileUrl,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       },
