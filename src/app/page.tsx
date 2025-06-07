@@ -19,6 +19,8 @@ function HomePage() {
   const [showIntro, setShowIntro] = useState(false);
 
   useEffect(() => {
+    console.log(launchParams);
+
     if (launchParams === null) {
       router.replace("/admin");
       return;
@@ -26,6 +28,8 @@ function HomePage() {
 
     const encodedGroupId =
       launchParams.tgWebAppStartParam ?? launchParams?.startapp ?? null;
+
+    // const encodedGroupId = "NjYzODczODU0MA==";
 
     if (encodedGroupId) {
       localStorage.removeItem("encoded_id");
@@ -46,9 +50,6 @@ function HomePage() {
 
   useEffect(() => {
     const hasSeenIntro = localStorage.getItem("hasSeenIntro");
-
-    // For Dev
-    // localStorage.setItem("encoded_id", "NjYzODczODU0MA==");
 
     if (!hasSeenIntro) {
       setShowIntro(true);
