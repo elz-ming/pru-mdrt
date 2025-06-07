@@ -21,7 +21,7 @@ export default function SubHeaderTabs({
   return (
     <div
       className={clsx(
-        "fixed flex justify-around w-full h-12 border-b",
+        "fixed flex justify-around w-full h-12 border-b z-50",
         inverse ? "border-gray-300 bg-white" : "border-white bg-[#e31d1a]"
       )}
     >

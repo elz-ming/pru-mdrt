@@ -20,10 +20,10 @@ export default function YouPage() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      <main className="mt-12">
+      <div className="mt-12 w-full h-full">
         {activeTab === "progress" && <YouProgress />}
         {activeTab === "achievements" && <YouAchievements />}
-      </main>
+      </div>
     </>
   );
 }
