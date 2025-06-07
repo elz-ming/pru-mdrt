@@ -90,11 +90,22 @@ bot.command("start", async (ctx) => {
       "Welcome BACK to PruMDRT Bot! 🚀\n\nThis is a prototype create by Team 1B. All data are artificial and solely for demonstration purpose.\n\n";
   }
 
-  response += "Click the button below to open the web app:";
+  // Fetch the user's tier from Supabase
+  const { data: profile, error: profileError } = await supabaseAdmin
+    .from("users")
+    .select("tier")
+    .eq("encoded_id", encodedUserId)
+    .single();
+
+  const tier = profile?.tier ?? "Unranked";
+
+  response += `👤 Your Profile\n• Name: ${displayName}\n• Tier: ${tier}`;
 
   await validateData(encodedUserId);
 
-  ctx.reply(response, {
+  ctx.reply(response);
+
+  ctx.reply("🔓 Open Web App", {
     reply_markup: {
       inline_keyboard: [
         [
