@@ -101,11 +101,11 @@ bot.command("start", async (ctx) => {
 
   response += `👤 Your Profile\n• Name: ${displayName}\n• Tier: ${tier}`;
 
+  response += "\n\nClick the button below to open the web app:";
+
   await validateData(encodedUserId);
 
-  ctx.reply(response);
-
-  ctx.reply("🔓 Open Web App", {
+  ctx.reply(response, {
     reply_markup: {
       inline_keyboard: [
         [
