@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
-import { useSafeLaunchParams } from "@/app/hooks/useSafeLaunchParams";
+import { retrieveLaunchParams } from "@telegram-apps/bridge";
 import ToDoList from "@/app/subcomponents/ToDoList";
 import ActivityFeed from "@/app/subcomponents/ActivityFeed";
 import AddPostButton from "@/app/subcomponents/AddPostButton";
@@ -12,22 +12,18 @@ import LottieIntro from "@/app/subcomponents/LottieIntro";
 
 function HomePage() {
   const router = useRouter();
-  const launchParams = useSafeLaunchParams();
+  const launchParams = retrieveLaunchParams();
   const [groupId, setGroupId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIntro, setShowIntro] = useState(false);
 
   useEffect(() => {
-    console.log(launchParams);
-
-    if (launchParams === null) {
-      router.replace("/admin");
-      return;
-    }
-
     const encodedGroupId =
-      launchParams.tgWebAppStartParam ?? launchParams?.startapp ?? null;
+      launchParams.tgWebAppStartParam ??
+      launchParams?.tgWebAppData?.start_param ??
+      launchParams?.startapp ??
+      null;
 
     // const encodedGroupId = "NjYzODczODU0MA==";
 
