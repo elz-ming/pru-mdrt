@@ -91,7 +91,7 @@ bot.command("start", async (ctx) => {
   }
 
   // Fetch the user's tier from Supabase
-  const { data: profile, error: profileError } = await supabaseAdmin
+  const { data: profile } = await supabaseAdmin
     .from("users")
     .select("tier")
     .eq("encoded_id", encodedUserId)
