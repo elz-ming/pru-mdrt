@@ -10,7 +10,7 @@ export default function AdminDashboard() {
           Admin Dashboard
         </h1>
         <p className="text-gray-600 mb-6">
-          You are viewing this page because you're not inside the Telegram
+          You are viewing this page because you are not inside the Telegram
           WebApp.
         </p>
 
