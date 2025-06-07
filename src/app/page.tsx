@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
-import { retrieveLaunchParams } from "@telegram-apps/bridge";
+import { useLaunchParams, RetrieveLPResult } from "@telegram-apps/sdk-react";
 import ToDoList from "@/app/subcomponents/ToDoList";
 import ActivityFeed from "@/app/subcomponents/ActivityFeed";
 import AddPostButton from "@/app/subcomponents/AddPostButton";
@@ -12,20 +12,29 @@ import LottieIntro from "@/app/subcomponents/LottieIntro";
 
 function HomePage() {
   const router = useRouter();
-  const launchParams = retrieveLaunchParams();
   const [groupId, setGroupId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIntro, setShowIntro] = useState(false);
 
-  useEffect(() => {
-    const encodedGroupId =
-      launchParams.tgWebAppStartParam ??
-      launchParams?.tgWebAppData?.start_param ??
-      launchParams?.startapp ??
-      null;
+  let launchParams: RetrieveLPResult;
+  try {
+    launchParams = useLaunchParams(); // this throws the error
+  } catch (err) {
+    console.warn("Failed to get Telegram launch params", err);
+    router.replace("/admin");
+  }
 
-    // const encodedGroupId = "NjYzODczODU0MA==";
+  useEffect(() => {
+    let encodedGroupId: string | null = null;
+    if (launchParams) {
+      encodedGroupId = (launchParams.tgWebAppStartParam ??
+        launchParams?.tgWebAppData?.start_param ??
+        launchParams?.startapp ??
+        null) as string;
+    } else {
+      encodedGroupId = "NjYzODczODU0MA==";
+    }
 
     if (encodedGroupId) {
       localStorage.removeItem("encoded_id");
