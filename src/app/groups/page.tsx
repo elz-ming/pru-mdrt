@@ -1,16 +1,29 @@
 "use client";
 
+import { useState } from "react";
+import SubHeaderTabs from "@/app/components/SubHeaderTabs";
+import GroupClubs from "./subcomponents/GroupClubs";
+import GroupChallenges from "./subcomponents/GroupChallenges";
+
 export default function GroupsPage() {
+  const [activeTab, setActiveTab] = useState("clubs");
+
+  const tabs = [
+    { label: "Clubs", value: "clubs" },
+    { label: "Challenges", value: "challenges" },
+  ];
+
   return (
-    <div className="p-4">
-      <h2 className="text-lg font-semibold mb-2">Your Support Groups</h2>
-      <p className="text-sm text-gray-600 mb-4">
-        Collaborate, compete, and grow together.
-      </p>
-      <ul className="space-y-2">
-        <li className="p-3 bg-gray-100 rounded">🌟 Elite Producers Club</li>
-        <li className="p-3 bg-gray-100 rounded">🔥 Weekly Closers Team</li>
-      </ul>
-    </div>
+    <>
+      <SubHeaderTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+      <main className="mt-12">
+        {activeTab === "clubs" && <GroupClubs />}
+        {activeTab === "challenges" && <GroupChallenges />}
+      </main>
+    </>
   );
 }

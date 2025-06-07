@@ -32,14 +32,13 @@ export default function SearchPage() {
           tabs={tabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          inverse
         />
       </header>
 
-      <main>
-        <div className="px-4 py-2">
-          {activeTab === "friends" && <SearchFriends />}
-          {activeTab === "clubs" && <SearchClubs />}
-        </div>
+      <main className="mt-12 px-4 py-2">
+        {activeTab === "friends" && <SearchFriends />}
+        {activeTab === "clubs" && <SearchClubs />}
       </main>
     </>
   );
