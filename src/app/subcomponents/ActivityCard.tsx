@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { MoreHorizontal, Heart, MessageCircle, Share } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -24,12 +25,14 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
       {/* Top Part: Profile + Name + Menu */}
       <div className="flex justify-between items-center px-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
+          <div className="rounded-full bg-gray-300 overflow-hidden">
             {profilePicUrl ? (
-              <img
+              <Image
                 src={profilePicUrl}
                 alt="Profile"
-                className="w-full h-full object-cover"
+                width={40}
+                height={40}
+                className="object-cover rounded-full"
               />
             ) : null}
           </div>

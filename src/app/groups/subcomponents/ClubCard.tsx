@@ -33,7 +33,7 @@ export default function ClubCard({
         </p>
         {latestPost && (
           <div className="mt-1 flex items-center gap-1 text-sm text-[#e31d1a] font-medium">
-            🔔<span className="truncate">"{latestPost}"</span>
+            🔔<span className="truncate">&quot;{latestPost}&quot;</span>
           </div>
         )}
       </div>
