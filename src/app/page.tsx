@@ -1,58 +1,47 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useLaunchParams } from "@telegram-apps/sdk-react";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
-import ToDoList from "@/app/subcomponents/ToDoList"; // You'll create this
-import ActivityFeed from "@/app/subcomponents/ActivityFeed"; // You'll create this
-import AddPostButton from "@/app/subcomponents/AddPostButton"; // You'll create this
+import { useSafeLaunchParams } from "@/app/hooks/useSafeLaunchParams";
+import ToDoList from "@/app/subcomponents/ToDoList";
+import ActivityFeed from "@/app/subcomponents/ActivityFeed";
+import AddPostButton from "@/app/subcomponents/AddPostButton";
 import LottieIntro from "@/app/subcomponents/LottieIntro";
 
 function HomePage() {
+  const router = useRouter();
+  const launchParams = useSafeLaunchParams();
   const [groupId, setGroupId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIntro, setShowIntro] = useState(false);
-  const launchParams = useLaunchParams();
 
   useEffect(() => {
-    const initialize = async () => {
-      try {
-        if (launchParams) {
-          const encodedGroupId =
-            launchParams.tgWebAppStartParam ??
-            launchParams?.tgWebAppData?.start_param ??
-            launchParams?.startapp ??
-            null;
+    if (launchParams === null) {
+      router.replace("/admin");
+      return;
+    }
 
-          if (encodedGroupId) {
-            // ✅ Clear only your app's localStorage keys
-            localStorage.removeItem("encoded_id");
-            localStorage.removeItem("encoded_id_ready");
-            localStorage.removeItem("hasSeenIntro");
+    const encodedGroupId =
+      launchParams.tgWebAppStartParam ?? launchParams?.startapp ?? null;
 
-            // ✅ Store fresh encoded ID
-            localStorage.setItem("encoded_id", encodedGroupId as string);
-            localStorage.setItem("encoded_id_ready", "true");
+    if (encodedGroupId) {
+      localStorage.removeItem("encoded_id");
+      localStorage.removeItem("encoded_id_ready");
+      localStorage.removeItem("hasSeenIntro");
 
-            const decodedGroupId = atob(encodedGroupId as string);
-            setGroupId(decodedGroupId);
-          } else {
-            setError("Missing group ID");
-          }
-        } else {
-          setError(`launchParams missing: ${JSON.stringify(launchParams)}`);
-        }
-      } catch (err) {
-        console.error("Error in initializeComponent:", err);
-        setError("An error occurred while initializing the component");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      localStorage.setItem("encoded_id", encodedGroupId as string);
+      localStorage.setItem("encoded_id_ready", "true");
 
-    initialize();
+      const decoded = atob(encodedGroupId as string);
+      setGroupId(decoded);
+    } else {
+      setError("Missing group ID");
+    }
+
+    setIsLoading(false);
   }, [launchParams]);
 
   useEffect(() => {
@@ -68,14 +57,9 @@ function HomePage() {
   }, []);
 
   if (isLoading) return <div className="p-4">Loading MDRT App...</div>;
-
   if (error) return <div className="p-4 text-red-500">{error}</div>;
-
   if (!groupId) return <div className="p-4">No valid group ID found.</div>;
-
-  if (showIntro) {
-    return <LottieIntro onFinish={() => setShowIntro(false)} />;
-  }
+  if (showIntro) return <LottieIntro onFinish={() => setShowIntro(false)} />;
 
   return (
     <>
