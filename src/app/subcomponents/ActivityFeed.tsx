@@ -60,7 +60,9 @@ export default function ActivityFeed() {
           <li key={post.id}>
             <ActivityCard
               name={post.users?.display_name || "Anonymous"}
-              profilePicUrl={post.users?.profile_pic_url || ""}
+              profilePicUrl={
+                post.users?.profile_pic_url || "/default-avatar.png"
+              }
               activityDescription={post.content}
               activityPicUrl={post.image_url}
               createdAt={post.created_at}

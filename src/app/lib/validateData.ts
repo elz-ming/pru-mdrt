@@ -1,6 +1,6 @@
 import supabaseAdmin from "./supabaseAdmin";
 
-const TIERS = ["bronze", "silver", "gold", "MDRT", "COT", "TOT"];
+const TIERS = ["gold", "MDRT", "COT", "TOT"];
 const DEMO_MILESTONES = ["followup_pro", "first_case_closed", "ten_cases_club"];
 
 export async function validateData(encodedUserId: string) {
