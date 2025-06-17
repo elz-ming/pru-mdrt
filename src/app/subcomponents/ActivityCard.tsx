@@ -2,10 +2,12 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { MoreHorizontal, Heart, MessageCircle, Share } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 interface ActivityCardProps {
+  encoded_id: string;
   name: string;
   activityDescription: string;
   profilePicUrl?: string | null;
@@ -14,6 +16,7 @@ interface ActivityCardProps {
 }
 
 const ActivityCard: React.FC<ActivityCardProps> = ({
+  encoded_id,
   name,
   activityDescription,
   profilePicUrl,
@@ -23,30 +26,33 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
   return (
     <div className="bg-white py-4 space-y-3">
       {/* Top Part: Profile + Name + Menu */}
+
       <div className="flex justify-between items-center px-4">
-        <div className="flex items-center gap-3">
-          <div className="rounded-full bg-gray-300 overflow-hidden">
-            {profilePicUrl ? (
-              <Image
-                src={profilePicUrl}
-                alt="Profile"
-                width={40}
-                height={40}
-                className="object-cover rounded-full"
-              />
-            ) : null}
+        <Link href={`/user/${encoded_id}`}>
+          <div className="flex items-center gap-3">
+            <div className="rounded-full bg-gray-300 overflow-hidden">
+              {profilePicUrl ? (
+                <Image
+                  src={profilePicUrl}
+                  alt="Profile"
+                  width={40}
+                  height={40}
+                  className="object-cover rounded-full"
+                />
+              ) : null}
+            </div>
+            <div className="flex flex-col">
+              <p className="font-semibold text-sm">{name}</p>
+              <p className="text-xs text-gray-500">
+                {createdAt
+                  ? formatDistanceToNow(new Date(createdAt), {
+                      addSuffix: true,
+                    })
+                  : ""}
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <p className="font-semibold text-sm">{name}</p>
-            <p className="text-xs text-gray-500">
-              {createdAt
-                ? formatDistanceToNow(new Date(createdAt), {
-                    addSuffix: true,
-                  })
-                : ""}
-            </p>
-          </div>
-        </div>
+        </Link>
         <button className="text-gray-500 hover:text-gray-700">
           <MoreHorizontal size={18} />
         </button>

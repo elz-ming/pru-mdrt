@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import dynamic from "next/dynamic";
+import supabase from "./lib/supabaseClient";
 
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import ToDoList from "@/app/subcomponents/ToDoList";
@@ -14,23 +15,28 @@ function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIntro, setShowIntro] = useState(false);
-  const launchParams = useLaunchParams();
+  // const launchParams = useLaunchParams();
+  const launchParams = "NjYzODczODU0MA==";
 
   useEffect(() => {
     const initialize = async () => {
       try {
         if (launchParams) {
-          const encodedGroupId =
-            launchParams.tgWebAppStartParam ??
-            launchParams?.tgWebAppData?.start_param ??
-            launchParams?.startapp ??
-            null;
+          // const encodedGroupId =
+          //   launchParams.tgWebAppStartParam ??
+          //   launchParams?.tgWebAppData?.start_param ??
+          //   launchParams?.startapp ??
+          //   null;
+
+          const encodedGroupId = launchParams;
 
           if (encodedGroupId) {
             // ✅ Clear only your app's localStorage keys
             localStorage.removeItem("encoded_id");
             localStorage.removeItem("encoded_id_ready");
             localStorage.removeItem("hasSeenIntro");
+            localStorage.removeItem("display_name");
+            localStorage.removeItem("profile_pic_url");
 
             // ✅ Store fresh encoded ID
             localStorage.setItem("encoded_id", encodedGroupId as string);
@@ -38,6 +44,23 @@ function HomePage() {
 
             const decodedGroupId = atob(encodedGroupId as string);
             setGroupId(decodedGroupId);
+
+            // 🔍 Query Supabase for user profile
+            const { data: userData, error: userError } = await supabase
+              .from("users")
+              .select("display_name, profile_pic_url")
+              .eq("encoded_id", encodedGroupId)
+              .single();
+
+            if (userError) {
+              console.error("User fetch error:", userError.message);
+            } else if (userData) {
+              localStorage.setItem("display_name", userData.display_name);
+              localStorage.setItem(
+                "profile_pic_url",
+                userData.profile_pic_url ?? "/default-avatar.png"
+              );
+            }
           } else {
             setError("Missing group ID");
           }

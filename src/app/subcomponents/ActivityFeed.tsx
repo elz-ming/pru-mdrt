@@ -10,6 +10,7 @@ interface Post {
   image_url?: string;
   created_at: string;
   users: {
+    encoded_id: string;
     display_name: string;
     profile_pic_url?: string;
   };
@@ -30,6 +31,7 @@ export default function ActivityFeed() {
           image_url,
           created_at,
           users:author_id (
+            encoded_id,
             display_name,
             profile_pic_url
           )
@@ -59,6 +61,7 @@ export default function ActivityFeed() {
         {posts.map((post) => (
           <li key={post.id}>
             <ActivityCard
+              encoded_id={post.users?.encoded_id || ""}
               name={post.users?.display_name || "Anonymous"}
               profilePicUrl={
                 post.users?.profile_pic_url || "/default-avatar.png"
