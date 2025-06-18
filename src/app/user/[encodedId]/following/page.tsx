@@ -14,7 +14,7 @@ interface FollowedUser {
     display_name: string;
     telegram_username: string;
     profile_pic_url?: string;
-  }[];
+  };
 }
 
 export default function FollowingPage() {
@@ -50,7 +50,9 @@ export default function FollowingPage() {
 
       <ul className="flex flex-col gap-3 p-4">
         {users.map((item) => {
-          const user = item.users[0];
+          const user = item.users;
+
+          console.log(user);
 
           return (
             <Link key={user.encoded_id} href={`/user/${user.encoded_id}`}>
