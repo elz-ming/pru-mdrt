@@ -14,20 +14,20 @@ function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIntro, setShowIntro] = useState(false);
-  // const launchParams = useLaunchParams();
-  const launchParams = "NjYzODczODU0MA==";
+  const launchParams = useLaunchParams();
+  // const launchParams = "NjYzODczODU0MA==";
 
   useEffect(() => {
     const initialize = async () => {
       try {
         if (launchParams) {
-          // const encodedGroupId =
-          //   launchParams.tgWebAppStartParam ??
-          //   launchParams?.tgWebAppData?.start_param ??
-          //   launchParams?.startapp ??
-          //   null;
+          const encodedGroupId =
+            launchParams.tgWebAppStartParam ??
+            launchParams?.tgWebAppData?.start_param ??
+            launchParams?.startapp ??
+            null;
 
-          const encodedGroupId = launchParams;
+          // const encodedGroupId = launchParams;
 
           if (encodedGroupId) {
             // ✅ Clear only your app's localStorage keys
