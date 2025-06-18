@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import supabase from "@/app/lib/supabaseClient";
-import { MoreHorizontal, Heart, MessageCircle } from "lucide-react";
+import { MoreHorizontal, Heart } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 interface ActivityCardProps {

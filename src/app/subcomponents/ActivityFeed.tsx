@@ -4,6 +4,18 @@ import { useEffect, useState } from "react";
 import ActivityCard from "./ActivityCard";
 import supabase from "@/app/lib/supabaseClient";
 
+interface RawPost {
+  id: string;
+  content: string;
+  image_url?: string;
+  created_at: string;
+  users: {
+    encoded_id: string;
+    display_name: string;
+    profile_pic_url?: string;
+  }[]; // Supabase returns this as an array unless it's a 1-1 relationship
+}
+
 interface Post {
   id: string;
   content: string;
@@ -55,8 +67,10 @@ export default function ActivityFeed() {
       }
 
       // Enrich posts with like data
-      const enrichedPosts = await Promise.all(
-        (postsData as any[]).map(async (post) => {
+      const enrichedPosts: Post[] = await Promise.all(
+        (postsData as RawPost[]).map(async (post): Promise<Post> => {
+          const user = post.users[0]; // flatten the array to match `Post.users`
+
           const [likeCountRes, userLikedRes] = await Promise.all([
             supabase
               .from("likes")
@@ -72,7 +86,11 @@ export default function ActivityFeed() {
           ]);
 
           return {
-            ...post,
+            id: post.id,
+            content: post.content,
+            image_url: post.image_url,
+            created_at: post.created_at,
+            users: user,
             likeCount: likeCountRes.count || 0,
             likedByCurrentUser: !!userLikedRes.data,
           };
