@@ -1,28 +1,61 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MoreHorizontal, Heart, MessageCircle, Share } from "lucide-react";
+import supabase from "@/app/lib/supabaseClient";
+import { MoreHorizontal, Heart, MessageCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 interface ActivityCardProps {
+  postId: string;
   encoded_id: string;
   name: string;
   activityDescription: string;
   profilePicUrl?: string | null;
   activityPicUrl?: string | null;
   createdAt?: string; // ISO string
+  initialLikedByUser?: boolean;
+  initialLikeCount?: number;
 }
 
 const ActivityCard: React.FC<ActivityCardProps> = ({
+  postId,
   encoded_id,
   name,
   activityDescription,
   profilePicUrl,
   activityPicUrl,
   createdAt,
+  initialLikedByUser,
+  initialLikeCount,
 }) => {
+  const [liked, setLiked] = useState(initialLikedByUser || false);
+  const [likeCount, setLikeCount] = useState(initialLikeCount || 0);
+
+  const encodedSelfId =
+    typeof window !== "undefined" ? localStorage.getItem("encoded_id") : null;
+
+  const toggleLike = async () => {
+    if (!encodedSelfId) return;
+
+    if (liked) {
+      await supabase
+        .from("likes")
+        .delete()
+        .eq("user_id", encodedSelfId)
+        .eq("post_id", postId);
+      setLiked(false);
+      setLikeCount((prev) => prev - 1);
+    } else {
+      await supabase
+        .from("likes")
+        .insert({ user_id: encodedSelfId, post_id: postId });
+      setLiked(true);
+      setLikeCount((prev) => prev + 1);
+    }
+  };
+
   return (
     <div className="bg-white py-4 space-y-3">
       {/* Top Part: Profile + Name + Menu */}
@@ -74,14 +107,14 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
 
       {/* Bottom Part: Actions */}
       <div className="flex justify-around pt-2 text-sm text-gray-600">
-        <button className="flex items-center hover:text-red-500">
-          <Heart size={24} />
-        </button>
-        <button className="flex items-center hover:text-blue-500">
-          <MessageCircle size={24} />
-        </button>
-        <button className="flex items-center hover:text-green-500">
-          <Share size={24} />
+        <button
+          onClick={toggleLike}
+          className={`flex items-center gap-1 transition-colors ${
+            liked ? "text-red-500" : "text-gray-600 hover:text-red-500"
+          }`}
+        >
+          <Heart size={24} fill={liked ? "currentColor" : "none"} />
+          <span className="text-sm">{likeCount}</span>
         </button>
       </div>
     </div>

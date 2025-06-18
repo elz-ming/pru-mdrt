@@ -3,6 +3,7 @@
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowLeft } from "lucide-react"; // or any icon you prefer
 import supabase from "@/app/lib/supabaseClient";
 
@@ -25,6 +26,8 @@ export default function UserProfile() {
 
   const encodedSelfId =
     typeof window !== "undefined" ? localStorage.getItem("encoded_id") : null;
+
+  const isSelf = encodedSelfId === decodedId;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -120,29 +123,36 @@ export default function UserProfile() {
 
         {/* Followers / Following */}
         <div className="flex gap-4 px-4">
-          <div className="text-start">
-            <p className="text-sm text-gray-500">Following</p>
-            <p className="text-lg font-semibold">{followingCount}</p>
-          </div>
-          <div className="text-start">
-            <p className="text-sm text-gray-500">Followers</p>
-            <p className="text-lg font-semibold">{followerCount}</p>
-          </div>
+          <Link href={`/user/${encodedId}/following`}>
+            <div className="text-start">
+              <p className="text-sm text-gray-500">Following</p>
+              <p className="text-lg font-semibold">{followingCount}</p>
+            </div>
+          </Link>
+
+          <Link href={`/user/${encodedId}/follower`}>
+            <div className="text-start">
+              <p className="text-sm text-gray-500">Followers</p>
+              <p className="text-lg font-semibold">{followerCount}</p>
+            </div>
+          </Link>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-start gap-4 px-4">
-          <button
-            onClick={handleFollowToggle}
-            className={`border px-4 py-1 rounded-full text-sm transition-colors duration-200${
-              isFollowing
-                ? "border-[#e31d1a] bg-[#e31d1a] text-white"
-                : "border-[#e31d1a] text-[#e31d1a] bg-white"
-            }`}
-          >
-            {isFollowing ? "Following" : "Follow"}
-          </button>
-        </div>
+        {!isSelf && (
+          <div className="flex justify-start gap-4 px-4">
+            <button
+              onClick={handleFollowToggle}
+              className={`border px-4 py-1 rounded-full text-sm transition-colors duration-200${
+                isFollowing
+                  ? "border-[#e31d1a] bg-[#e31d1a] text-white"
+                  : "border-[#e31d1a] text-[#e31d1a] bg-white"
+              }`}
+            >
+              {isFollowing ? "Following" : "Follow"}
+            </button>
+          </div>
+        )}
       </div>
     </>
   );

@@ -14,42 +14,79 @@ interface Post {
     display_name: string;
     profile_pic_url?: string;
   };
+  likeCount: number;
+  likedByCurrentUser: boolean;
 }
 
 export default function ActivityFeed() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const encodedSelfId =
+    typeof window !== "undefined" ? localStorage.getItem("encoded_id") : null;
+
   useEffect(() => {
     const fetchPosts = async () => {
-      const { data, error } = await supabase
+      const { data: postsData, error: postsError } = await supabase
         .from("posts")
         .select(
           `
-          id,
-          content,
-          image_url,
-          created_at,
-          users:author_id (
-            encoded_id,
-            display_name,
-            profile_pic_url
-          )
-        `
+        id,
+        content,
+        image_url,
+        created_at,
+        users:author_id (
+          encoded_id,
+          display_name,
+          profile_pic_url
+        )
+      `
         )
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching posts:", error.message);
+      if (postsError) {
+        console.error("Error fetching posts:", postsError.message);
         return;
       }
 
-      setPosts((data as unknown as Post[]) || []);
+      if (!postsData) {
+        setLoading(false);
+        return;
+      }
+
+      // Enrich posts with like data
+      const enrichedPosts = await Promise.all(
+        (postsData as any[]).map(async (post) => {
+          const [likeCountRes, userLikedRes] = await Promise.all([
+            supabase
+              .from("likes")
+              .select("*", { count: "exact", head: true })
+              .eq("post_id", post.id),
+
+            supabase
+              .from("likes")
+              .select("user_id")
+              .eq("post_id", post.id)
+              .eq("user_id", encodedSelfId)
+              .maybeSingle(),
+          ]);
+
+          return {
+            ...post,
+            likeCount: likeCountRes.count || 0,
+            likedByCurrentUser: !!userLikedRes.data,
+          };
+        })
+      );
+
+      setPosts(enrichedPosts);
       setLoading(false);
     };
 
-    fetchPosts();
-  }, []);
+    if (encodedSelfId) {
+      fetchPosts();
+    }
+  }, [encodedSelfId]);
 
   if (loading) {
     return <p className="text-center mt-4">Loading feed...</p>;
@@ -61,6 +98,7 @@ export default function ActivityFeed() {
         {posts.map((post) => (
           <li key={post.id}>
             <ActivityCard
+              postId={post.id}
               encoded_id={post.users?.encoded_id || ""}
               name={post.users?.display_name || "Anonymous"}
               profilePicUrl={
@@ -69,6 +107,8 @@ export default function ActivityFeed() {
               activityDescription={post.content}
               activityPicUrl={post.image_url}
               createdAt={post.created_at}
+              initialLikedByUser={post.likedByCurrentUser}
+              initialLikeCount={post.likeCount}
             />
           </li>
         ))}

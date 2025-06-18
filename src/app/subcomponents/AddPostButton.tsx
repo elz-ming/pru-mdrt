@@ -59,7 +59,7 @@ export default function AddPostButton() {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="fixed bottom-24 right-4 bg-red-500 text-white w-16 h-16 flex items-center justify-center rounded-full shadow-xl text-2xl"
+        className="z-20 fixed bottom-24 right-4 bg-red-500 text-white w-16 h-16 flex items-center justify-center rounded-full shadow-xl text-2xl"
       >
         +
       </button>
