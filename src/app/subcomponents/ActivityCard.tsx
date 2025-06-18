@@ -32,6 +32,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
 }) => {
   const [liked, setLiked] = useState(initialLikedByUser || false);
   const [likeCount, setLikeCount] = useState(initialLikeCount || 0);
+  const [showOptions, setShowOptions] = useState(false);
 
   const encodedSelfId =
     typeof window !== "undefined" ? localStorage.getItem("encoded_id") : null;
@@ -54,6 +55,22 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
       setLiked(true);
       setLikeCount((prev) => prev + 1);
     }
+  };
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?"
+    );
+    if (!confirmDelete) return;
+
+    const { error } = await supabase.from("posts").delete().eq("id", postId);
+    if (error) {
+      alert("Failed to delete post.");
+      return;
+    }
+
+    // Optional: you might want to trigger a refresh or state update here
+    alert("Post deleted.");
   };
 
   return (
@@ -86,9 +103,23 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
             </div>
           </div>
         </Link>
-        <button className="text-gray-500 hover:text-gray-700">
-          <MoreHorizontal size={18} />
-        </button>
+        <div className="relative text-gray-500 hover:text-gray-700">
+          <button onClick={() => setShowOptions((prev) => !prev)}>
+            <MoreHorizontal size={18} />
+          </button>
+
+          {showOptions && encodedSelfId === encoded_id && (
+            <div className="absolute right-0 top-6 bg-white shadow-md rounded-md p-2 z-10">
+              <button
+                className="block text-red-500 text-sm hover:underline"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+              {/* Future: Add Edit option here */}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Middle Part: Activity */}
