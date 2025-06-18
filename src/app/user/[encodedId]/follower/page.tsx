@@ -31,7 +31,7 @@ export default function FollowerPage() {
   const router = useRouter();
   const { encodedId } = useParams();
   const decodedId = decodeURIComponent(encodedId as string);
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<Follower[]>([]);
 
   useEffect(() => {
     const fetchFollowers = async () => {
