@@ -3,13 +3,6 @@
 import { useState } from "react";
 import { CheckSquare, Square } from "lucide-react";
 
-const dates = [
-  { day: "14", label: "Mon" },
-  { day: "15", label: "Tue" },
-  { day: "16", label: "Wed" },
-  { day: "17", label: "Thu" },
-];
-
 const initialTasks = [
   {
     title: "Fitness",
@@ -54,7 +47,6 @@ const initialTasks = [
 ];
 
 export default function ToDoPage() {
-  const [selectedDate, setSelectedDate] = useState("14");
   const [tasks, setTasks] = useState(initialTasks);
 
   const toggleDone = (index: number) => {
