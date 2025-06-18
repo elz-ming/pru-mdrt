@@ -17,6 +17,7 @@ interface ActivityCardProps {
   createdAt?: string; // ISO string
   initialLikedByUser?: boolean;
   initialLikeCount?: number;
+  refreshFeed: () => void;
 }
 
 const ActivityCard: React.FC<ActivityCardProps> = ({
@@ -29,6 +30,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
   createdAt,
   initialLikedByUser,
   initialLikeCount,
+  refreshFeed,
 }) => {
   const [liked, setLiked] = useState(initialLikedByUser || false);
   const [likeCount, setLikeCount] = useState(initialLikeCount || 0);
@@ -71,6 +73,16 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
 
     // Optional: you might want to trigger a refresh or state update here
     alert("Post deleted.");
+    refreshFeed(); // ✅ trigger re-fetch after delete
+  };
+
+  const handleReport = async () => {
+    const confirmReport = window.confirm(
+      "Are you sure you want to report this post?"
+    );
+    if (!confirmReport) return;
+
+    alert("Report submitted. Our team will review this post.");
   };
 
   return (
@@ -108,15 +120,32 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
             <MoreHorizontal size={18} />
           </button>
 
-          {showOptions && encodedSelfId === encoded_id && (
-            <div className="absolute right-0 top-6 bg-white shadow-md rounded-md p-2 z-10">
-              <button
-                className="block text-red-500 text-sm hover:underline"
-                onClick={handleDelete}
-              >
-                Delete
-              </button>
-              {/* Future: Add Edit option here */}
+          {showOptions && (
+            <div className="absolute right-0 top-6 bg-white shadow-md rounded-md z-10 min-w-[100px] overflow-hidden">
+              {encodedSelfId === encoded_id ? (
+                <>
+                  <button
+                    className="block text-sm text-blue-600 hover:underline w-full text-center outline outline-1 outline-gray-200 p-1"
+                    onClick={() => alert("Edit feature coming soon!")}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    className="block text-sm text-red-500 hover:underline w-full text-center outline outline-1 outline-gray-200 p-1"
+                    onClick={handleDelete}
+                  >
+                    Delete
+                  </button>
+                </>
+              ) : (
+                <button
+                  className="block text-sm text-orange-500 hover:underline w-full text-center outline outline-1 outline-gray-200 p-1"
+                  onClick={handleReport}
+                >
+                  Report
+                </button>
+              )}
             </div>
           )}
         </div>

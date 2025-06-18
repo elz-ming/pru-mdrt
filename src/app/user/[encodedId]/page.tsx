@@ -6,11 +6,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react"; // or any icon you prefer
 import supabase from "@/app/lib/supabaseClient";
+import SubHeaderTabs from "@/app/components/SubHeaderTabs";
+import Progress from "./subcomponents/Progress";
+import ActivityFeed from "@/app/subcomponents/ActivityFeed";
 
 type User = {
   display_name: string;
   telegram_username: string;
   profile_pic_url?: string;
+  tier?: string;
+};
+
+const badgePaths: Record<string, string> = {
+  bronze: "/bronze-badge.png",
+  silver: "/silver-badge.png",
+  gold: "/gold-badge.png",
+  MDRT: "/MDRT-badge.png",
+  COT: "/COT-badge.png",
+  TOT: "/TOT-badge.png",
 };
 
 export default function UserProfile() {
@@ -23,6 +36,13 @@ export default function UserProfile() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+
+  const [activeTab, setActiveTab] = useState("progress");
+
+  const tabs = [
+    { label: "Progress", value: "progress" },
+    { label: "Activity", value: "activity" },
+  ];
 
   const encodedSelfId =
     typeof window !== "undefined" ? localStorage.getItem("encoded_id") : null;
@@ -37,7 +57,7 @@ export default function UserProfile() {
         await Promise.all([
           supabase
             .from("users")
-            .select("display_name, telegram_username, profile_pic_url")
+            .select("display_name, telegram_username, profile_pic_url, tier")
             .eq("encoded_id", decodedId)
             .maybeSingle(),
 
@@ -109,16 +129,27 @@ export default function UserProfile() {
 
       {/* Profile */}
       <div className="flex flex-col w-full bg-white gap-4 py-4">
-        <div className="flex items-center gap-4 px-4">
-          <Image
-            src={imageSrc}
-            alt={user.display_name}
-            width={72}
-            height={72}
-            className="rounded-full object-cover"
-            priority
-          />
-          <h1 className="text-2xl font-bold">{user.display_name}</h1>
+        <div className="flex justify-between items-center px-4">
+          <div className="flex gap-2 items-center">
+            <Image
+              src={imageSrc}
+              alt={user.display_name}
+              width={72}
+              height={72}
+              className="rounded-full object-cover"
+              priority
+            />
+            <h1 className="text-2xl font-bold">{user.display_name}</h1>
+          </div>
+
+          {user.tier && badgePaths[user.tier] && (
+            <Image
+              src={badgePaths[user.tier]}
+              alt={`${user.tier} badge`}
+              width={100}
+              height={100}
+            />
+          )}
         </div>
 
         {/* Followers / Following */}
@@ -153,6 +184,22 @@ export default function UserProfile() {
             </button>
           </div>
         )}
+      </div>
+
+      <SubHeaderTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        fixed={false}
+        inverse={true}
+      />
+
+      <div
+        className="overflow-y-auto"
+        style={{ maxHeight: "calc(100vh - 320px)" }}
+      >
+        {activeTab === "progress" && <Progress userId={decodedId} />}
+        {activeTab === "activity" && <ActivityFeed userId={decodedId} />}
       </div>
     </>
   );

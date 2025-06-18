@@ -18,77 +18,82 @@ interface Post {
   likedByCurrentUser: boolean;
 }
 
-export default function ActivityFeed() {
+export default function ActivityFeed({ userId }: { userId?: string }) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
   const encodedSelfId =
     typeof window !== "undefined" ? localStorage.getItem("encoded_id") : null;
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const { data: postsData, error: postsError } = await supabase
-        .from("posts")
-        .select(
-          `
-        id,
-        content,
-        image_url,
-        created_at,
-        users:author_id (
-          encoded_id,
-          display_name,
-          profile_pic_url
-        )
-      `
-        )
-        .order("created_at", { ascending: false });
+  const fetchPosts = async () => {
+    let query = supabase
+      .from("posts")
+      .select(
+        `
+    id,
+    content,
+    image_url,
+    created_at,
+    users:author_id (
+      encoded_id,
+      display_name,
+      profile_pic_url
+    )
+  `
+      )
+      .order("created_at", { ascending: false });
 
-      if (postsError) {
-        console.error("Error fetching posts:", postsError.message);
-        return;
-      }
+    if (userId) {
+      query = query.eq("author_id", userId);
+    }
 
-      if (!postsData) {
-        setLoading(false);
-        return;
-      }
+    const { data: postsData, error: postsError } = await query;
 
-      // Enrich posts with like data
-      const enrichedPosts: Post[] = await Promise.all(
-        (postsData as unknown as Post[]).map(async (post): Promise<Post> => {
-          const user = post.users; // flatten the array to match `Post.users`
+    if (postsError) {
+      console.error("Error fetching posts:", postsError.message);
+      return;
+    }
 
-          const [likeCountRes, userLikedRes] = await Promise.all([
-            supabase
-              .from("likes")
-              .select("*", { count: "exact", head: true })
-              .eq("post_id", post.id),
-
-            supabase
-              .from("likes")
-              .select("user_id")
-              .eq("post_id", post.id)
-              .eq("user_id", encodedSelfId)
-              .maybeSingle(),
-          ]);
-
-          return {
-            id: post.id,
-            content: post.content,
-            image_url: post.image_url,
-            created_at: post.created_at,
-            users: user,
-            likeCount: likeCountRes.count || 0,
-            likedByCurrentUser: !!userLikedRes.data,
-          };
-        })
-      );
-
-      setPosts(enrichedPosts);
+    if (!postsData) {
       setLoading(false);
-    };
+      return;
+    }
 
+    const enrichedPosts: Post[] = await Promise.all(
+      (postsData as unknown as Post[]).map(async (post): Promise<Post> => {
+        const user = post.users;
+
+        const [likeCountRes, userLikedRes] = await Promise.all([
+          supabase
+            .from("likes")
+            .select("*", { count: "exact", head: true })
+            .eq("post_id", post.id),
+
+          supabase
+            .from("likes")
+            .select("user_id")
+            .eq("post_id", post.id)
+            .eq("user_id", encodedSelfId)
+            .maybeSingle(),
+        ]);
+
+        return {
+          id: post.id,
+          content: post.content,
+          image_url: post.image_url,
+          created_at: post.created_at,
+          users: user,
+          likeCount: likeCountRes.count || 0,
+          likedByCurrentUser: !!userLikedRes.data,
+        };
+      })
+    );
+
+    setPosts(enrichedPosts);
+    setLoading(false);
+  };
+
+  useEffect(() => {
     if (encodedSelfId) {
       fetchPosts();
     }
@@ -99,7 +104,7 @@ export default function ActivityFeed() {
   }
 
   return (
-    <div className="h-full overflow-auto z-20">
+    <div className="h-full overflow-auto z-20 mt-4">
       <ul className="flex flex-col gap-4">
         {posts.map((post) => (
           <li key={post.id}>
@@ -115,6 +120,7 @@ export default function ActivityFeed() {
               createdAt={post.created_at}
               initialLikedByUser={post.likedByCurrentUser}
               initialLikeCount={post.likeCount}
+              refreshFeed={fetchPosts}
             />
           </li>
         ))}

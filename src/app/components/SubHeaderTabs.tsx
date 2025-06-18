@@ -11,18 +11,21 @@ export default function SubHeaderTabs({
   tabs,
   activeTab,
   setActiveTab,
+  fixed = true,
   inverse = false,
 }: {
   tabs: TabOption[];
   activeTab: string;
   setActiveTab: (val: string) => void;
+  fixed?: boolean;
   inverse?: boolean;
 }) {
   return (
     <div
       className={clsx(
-        "fixed flex justify-around w-full h-12 border-b z-50",
-        inverse ? "border-gray-300 bg-white" : "border-white bg-[#e31d1a]"
+        "flex justify-around w-full h-12 border-b",
+        inverse ? "border-gray-300 bg-white" : "border-white bg-[#e31d1a]",
+        fixed ? "fixed z-50" : ""
       )}
     >
       {tabs.map((tab) => (
