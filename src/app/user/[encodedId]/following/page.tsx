@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react"; // or any icon you prefer
 
-interface FollowedUser {
+interface Following {
   followed_id: string;
   users: {
     encoded_id: string;
@@ -21,7 +21,7 @@ export default function FollowingPage() {
   const router = useRouter();
   const { encodedId } = useParams();
   const decodedId = decodeURIComponent(encodedId as string);
-  const [users, setUsers] = useState<FollowedUser[]>([]);
+  const [users, setUsers] = useState<Following[]>([]);
 
   useEffect(() => {
     const fetchFollowing = async () => {
@@ -32,7 +32,16 @@ export default function FollowingPage() {
         )
         .eq("follower_id", decodedId);
 
-      if (!error && data) setUsers(data);
+      if (!error && data) {
+        const parsed: Following[] = (data as unknown as Following[]).map(
+          (item) => ({
+            followed_id: item.followed_id,
+            users: item.users as Following["users"], // assert that `users` is a single object
+          })
+        );
+
+        setUsers(parsed);
+      }
     };
 
     fetchFollowing();

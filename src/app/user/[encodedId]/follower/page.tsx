@@ -32,7 +32,17 @@ export default function FollowerPage() {
         )
         .eq("followed_id", decodedId);
 
-      if (!error && data) setUsers(data);
+      if (!error && data) {
+        // Safely coerce users to the expected shape
+        const parsed: Follower[] = (data as unknown as Follower[]).map(
+          (item) => ({
+            follower_id: item.follower_id,
+            users: item.users as Follower["users"], // force users to be an object, not array
+          })
+        );
+
+        setUsers(parsed);
+      }
     };
 
     fetchFollowers();
