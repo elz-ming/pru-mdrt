@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Users, Home, User } from "lucide-react";
+import { Users, Home, Notebook } from "lucide-react";
 
 export default function FooterBar() {
   const router = useRouter();
@@ -28,11 +28,14 @@ export default function FooterBar() {
       </button>
 
       <button
-        onClick={() => router.push("/you")}
+        onClick={() => router.push("/todolist")}
         className="flex flex-col items-center flex-1"
       >
-        <User size={40} color={isActive("/you") ? "#e31d1a" : "#999"} />
-        <span className="text-xs">You</span>
+        <Notebook
+          size={40}
+          color={isActive("/todolist") ? "#e31d1a" : "#999"}
+        />
+        <span className="text-xs ">To-Do List</span>
       </button>
     </nav>
   );

@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import supabase from "./lib/supabaseClient";
 
 import { useLaunchParams } from "@telegram-apps/sdk-react";
-import ToDoList from "@/app/subcomponents/ToDoList";
 import ActivityFeed from "@/app/subcomponents/ActivityFeed";
 import AddPostButton from "@/app/subcomponents/AddPostButton";
 import LottieIntro from "@/app/subcomponents/LottieIntro";
@@ -34,7 +33,6 @@ function HomePage() {
             // ✅ Clear only your app's localStorage keys
             localStorage.removeItem("encoded_id");
             localStorage.removeItem("encoded_id_ready");
-            localStorage.removeItem("hasSeenIntro");
             localStorage.removeItem("display_name");
             localStorage.removeItem("profile_pic_url");
 
@@ -94,13 +92,8 @@ function HomePage() {
 
   return (
     <>
-      {/* To-Do Section */}
-      <ToDoList />
-
       {/* Activity Feed */}
-      <div className="pt-24">
-        <ActivityFeed />
-      </div>
+      <ActivityFeed />
 
       {/* Add Post Button */}
       <AddPostButton />

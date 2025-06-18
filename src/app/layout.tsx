@@ -17,7 +17,7 @@ export default function RootLayout({
   const getTitle = () => {
     if (pathname === "/") return "Home";
     if (pathname === "/groups") return "Groups";
-    if (pathname === "/you") return "You";
+    if (pathname === "/todolist") return "To-Do List";
     return "";
   };
   return (
