@@ -7,16 +7,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react"; // or any icon you prefer
 
-interface RawFollower {
-  follower_id: string;
-  users: {
-    encoded_id: string;
-    display_name: string;
-    telegram_username: string;
-    profile_pic_url?: string;
-  }[];
-}
-
 interface Follower {
   follower_id: string;
   users: {
@@ -24,7 +14,7 @@ interface Follower {
     display_name: string;
     telegram_username: string;
     profile_pic_url?: string;
-  };
+  }[];
 }
 
 export default function FollowerPage() {
@@ -42,16 +32,7 @@ export default function FollowerPage() {
         )
         .eq("followed_id", decodedId);
 
-      if (!error && data) {
-        const parsed = (data as RawFollower[])
-          .filter((item) => Array.isArray(item.users) && item.users.length > 0)
-          .map((item) => ({
-            follower_id: item.follower_id,
-            users: item.users[0], // flatten
-          }));
-
-        setUsers(parsed);
-      }
+      if (!error && data) setUsers(data);
     };
 
     fetchFollowers();
@@ -69,7 +50,7 @@ export default function FollowerPage() {
 
       <ul className="flex flex-col gap-3 p-4">
         {users.map((item) => {
-          const user = item.users;
+          const user = item.users[0];
           return (
             <Link key={user.encoded_id} href={`/user/${user.encoded_id}`}>
               <li className="flex items-center gap-3 p-3 bg-gray-100 rounded-md hover:bg-gray-200 transition">
