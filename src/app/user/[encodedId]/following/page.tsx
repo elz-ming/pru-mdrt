@@ -7,11 +7,21 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react"; // or any icon you prefer
 
+interface FollowedUser {
+  followed_id: string;
+  users: {
+    encoded_id: string;
+    display_name: string;
+    telegram_username: string;
+    profile_pic_url?: string;
+  };
+}
+
 export default function FollowingPage() {
   const router = useRouter();
   const { encodedId } = useParams();
   const decodedId = decodeURIComponent(encodedId as string);
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<FollowedUser[]>([]);
 
   useEffect(() => {
     const fetchFollowing = async () => {
