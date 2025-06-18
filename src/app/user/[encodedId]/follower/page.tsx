@@ -7,6 +7,26 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react"; // or any icon you prefer
 
+interface RawFollower {
+  follower_id: string;
+  users: {
+    encoded_id: string;
+    display_name: string;
+    telegram_username: string;
+    profile_pic_url?: string;
+  }[];
+}
+
+interface Follower {
+  follower_id: string;
+  users: {
+    encoded_id: string;
+    display_name: string;
+    telegram_username: string;
+    profile_pic_url?: string;
+  };
+}
+
 export default function FollowerPage() {
   const router = useRouter();
   const { encodedId } = useParams();
@@ -22,7 +42,16 @@ export default function FollowerPage() {
         )
         .eq("followed_id", decodedId);
 
-      if (!error && data) setUsers(data);
+      if (!error && data) {
+        const parsed = (data as RawFollower[])
+          .filter((item) => Array.isArray(item.users) && item.users.length > 0)
+          .map((item) => ({
+            follower_id: item.follower_id,
+            users: item.users[0], // flatten
+          }));
+
+        setUsers(parsed);
+      }
     };
 
     fetchFollowers();

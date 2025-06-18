@@ -7,6 +7,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react"; // or any icon you prefer
 
+interface RawFollowedUser {
+  followed_id: string;
+  users: {
+    encoded_id: string;
+    display_name: string;
+    telegram_username: string;
+    profile_pic_url?: string;
+  }[]; // ← array returned by Supabase
+}
+
 interface FollowedUser {
   followed_id: string;
   users: {
@@ -32,7 +42,16 @@ export default function FollowingPage() {
         )
         .eq("follower_id", decodedId);
 
-      if (!error && data) setUsers(data);
+      if (!error && data) {
+        const parsed = (data as RawFollowedUser[])
+          .filter((item) => Array.isArray(item.users) && item.users.length > 0)
+          .map((item) => ({
+            followed_id: item.followed_id,
+            users: item.users[0], // flatten the array
+          }));
+
+        setUsers(parsed); // parsed is FollowedUser[]
+      }
     };
 
     fetchFollowing();
