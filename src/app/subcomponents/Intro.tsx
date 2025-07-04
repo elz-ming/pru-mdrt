@@ -42,7 +42,7 @@ export default function Intro({ onFinish }: { onFinish: () => void }) {
   }, [onFinish]);
 
   return (
-    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-50">
+    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-100">
       <h1
         className={`text-4xl font-bold mb-4 text-red-600 transition-opacity duration-1000 ${
           showTitle ? "opacity-100" : "opacity-0"

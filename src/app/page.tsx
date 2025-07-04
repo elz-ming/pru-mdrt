@@ -18,6 +18,15 @@ function HomePage() {
   // const launchParams = "NjYzODczODU0MA==";
 
   useEffect(() => {
+    const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+
+    if (!hasSeenIntro) {
+      setShowIntro(true);
+      localStorage.setItem("hasSeenIntro", "true");
+    }
+  }, []);
+
+  useEffect(() => {
     const initialize = async () => {
       try {
         if (launchParams) {
@@ -76,15 +85,6 @@ function HomePage() {
 
     initialize();
   }, [launchParams]);
-
-  useEffect(() => {
-    const hasSeenIntro = localStorage.getItem("hasSeenIntro");
-
-    if (!hasSeenIntro) {
-      setShowIntro(true);
-      localStorage.setItem("hasSeenIntro", "true");
-    }
-  }, []);
 
   if (isLoading) return <div className="p-4">Loading MDRT App...</div>;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
