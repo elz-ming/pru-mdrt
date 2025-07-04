@@ -17,8 +17,6 @@ function HomePage() {
   const launchParams = useLaunchParams();
   // const launchParams = "NjYzODczODU0MA==";
 
-  if (showIntro) return <Intro onFinish={() => setShowIntro(false)} />;
-
   // useEffect(() => {
   //   const hasSeenIntro = localStorage.getItem("hasSeenIntro");
 
