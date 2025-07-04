@@ -7,7 +7,7 @@ import supabase from "./lib/supabaseClient";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import ActivityFeed from "@/app/subcomponents/ActivityFeed";
 import AddPostButton from "@/app/subcomponents/AddPostButton";
-import LottieIntro from "@/app/subcomponents/LottieIntro";
+import Intro from "@/app/subcomponents/Intro";
 
 function HomePage() {
   const [groupId, setGroupId] = useState<string | null>(null);
@@ -35,6 +35,7 @@ function HomePage() {
             localStorage.removeItem("encoded_id_ready");
             localStorage.removeItem("display_name");
             localStorage.removeItem("profile_pic_url");
+            localStorage.removeItem("hasSeenIntro");
 
             // ✅ Store fresh encoded ID
             localStorage.setItem("encoded_id", encodedGroupId as string);
@@ -88,7 +89,7 @@ function HomePage() {
   if (isLoading) return <div className="p-4">Loading MDRT App...</div>;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
   if (!groupId) return <div className="p-4">No valid group ID found.</div>;
-  if (showIntro) return <LottieIntro onFinish={() => setShowIntro(false)} />;
+  if (showIntro) return <Intro onFinish={() => setShowIntro(false)} />;
 
   return (
     <>
