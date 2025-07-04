@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckSquare, Square, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import supabase from "@/app/lib/supabaseClient";
-import { categories } from "./categoryData";
+import TaskItem from "./subcomponents/TaskItem";
+import { QUOTES } from "@/app/data/quoteData";
 
 import {
   isToday,
@@ -33,6 +34,7 @@ export default function ToDoPage() {
     return today.toISOString().split("T")[0];
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [quote, setQuote] = useState<string>("");
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -55,6 +57,11 @@ export default function ToDoPage() {
 
     fetchTasks();
   }, [date]);
+
+  useEffect(() => {
+    const randomQuote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+    setQuote(randomQuote);
+  }, []);
 
   const toggleDone = async (index: number) => {
     const task = tasks[index];
@@ -150,41 +157,21 @@ export default function ToDoPage() {
       {/* Task List Section */}
       <div className="flex flex-col gap-4 h-full bg-white text-black p-4 rounded-tl-[2rem] overflow-y-auto">
         <h2 className="text-lg font-semibold">My Tasks</h2>
-
-        <div className="flex flex-col gap-4 overflow-y-auto pb-32 scroll-pb-32">
-          {tasks.map((task, index) => {
-            const category = categories.find((c) => c.name === task.category);
-
-            return (
-              <div
+        <div className="flex flex-col h-full justify-between pb-32">
+          <div className="flex flex-col gap-4 overflow-y-auto scroll-pb-32">
+            {tasks.map((task, index) => (
+              <TaskItem
                 key={task.id}
-                className={`flex items-center justify-between p-4 rounded-lg ${
-                  task.status === "completed"
-                    ? "bg-[#e31d1a]/20 border-none"
-                    : "bg-white border border-[#e31d1a]/20"
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  {category?.icon && (
-                    <category.icon className="text-[#e31d1a]" size={48} />
-                  )}
-                  <div className="flex flex-col">
-                    <p className="font-semibold text-lg">{task.task_name}</p>
-                    <p className="text-sm text-gray-600">
-                      {task.task_description || "-"}
-                    </p>
-                  </div>
-                </div>
-                <button onClick={() => toggleDone(index)}>
-                  {task.status === "completed" ? (
-                    <CheckSquare className="text-[#e31d1a]" />
-                  ) : (
-                    <Square className="text-[#e31d1a]" />
-                  )}
-                </button>
-              </div>
-            );
-          })}
+                task={task}
+                index={index}
+                toggleDone={toggleDone}
+              />
+            ))}
+          </div>
+          {/* Motivational Quote Box */}
+          <div className="mx-4 rounded-2xl bg-white/90 text-[#e31d1a] p-4 border border-[#e31d1a] shadow-md">
+            <p className="text-center text-2xl italic">{quote}</p>
+          </div>
         </div>
       </div>
     </div>
