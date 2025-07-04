@@ -13,18 +13,10 @@ function HomePage() {
   const [groupId, setGroupId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [showIntro, setShowIntro] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
+  const [showMain, setShowMain] = useState(false); // only show when ready
   const launchParams = useLaunchParams();
   // const launchParams = "NjYzODczODU0MA==";
-
-  // useEffect(() => {
-  //   const hasSeenIntro = localStorage.getItem("hasSeenIntro");
-
-  //   if (!hasSeenIntro) {
-  //     setShowIntro(true);
-  //     localStorage.setItem("hasSeenIntro", "true");
-  //   }
-  // }, []);
 
   useEffect(() => {
     const initialize = async () => {
@@ -86,18 +78,28 @@ function HomePage() {
     initialize();
   }, [launchParams]);
 
+  // After Intro finishes, show main
+  const handleIntroFinish = () => {
+    setShowIntro(false);
+    setShowMain(true);
+  };
+
   if (isLoading) return <div className="p-4">Loading MDRT App...</div>;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
-  if (!groupId) return <div className="p-4">No valid group ID found.</div>;
-  if (showIntro) return <Intro onFinish={() => setShowIntro(false)} />;
-
+  // if (!groupId) return <div className="p-4">No valid group ID found.</div>;
+  //
   return (
     <>
-      {/* Activity Feed */}
-      <ActivityFeed />
-
-      {/* Add Post Button */}
-      <AddPostButton />
+      {showIntro && <Intro onFinish={handleIntroFinish} />}
+      {!showIntro && !showMain && (
+        <div className="fixed inset-0 bg-white z-0"></div>
+      )}
+      {showMain && (
+        <>
+          <ActivityFeed />
+          <AddPostButton />
+        </>
+      )}
     </>
   );
 }
