@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ActivityCard from "./ActivityCard";
+import ProgressBar from "./ProgressBar";
 import supabase from "@/app/lib/supabaseClient";
 
 interface Post {
@@ -105,6 +106,7 @@ export default function ActivityFeed({ userId }: { userId?: string }) {
 
   return (
     <div className="h-full overflow-auto z-20 mt-4">
+      <ProgressBar />
       <ul className="flex flex-col gap-4">
         {posts.map((post) => (
           <li key={post.id}>
