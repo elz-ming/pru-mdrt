@@ -103,7 +103,7 @@ bot.command("start", async (ctx) => {
 
   response += "\n\nClick the button below to open the web app:";
 
-  await validateData(encodedUserId);
+  await validateData(encodedUserId, displayName);
 
   ctx.reply(response, {
     reply_markup: {
