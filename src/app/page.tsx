@@ -86,8 +86,8 @@ function HomePage() {
 
   if (isLoading) return <div className="p-4">Loading MDRT App...</div>;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
-  // if (!groupId) return <div className="p-4">No valid group ID found.</div>;
-  //
+  if (!groupId) return <div className="p-4">No valid group ID found.</div>;
+
   return (
     <>
       {showIntro && <Intro onFinish={handleIntroFinish} />}
