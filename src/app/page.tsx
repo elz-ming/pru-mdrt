@@ -17,14 +17,16 @@ function HomePage() {
   const launchParams = useLaunchParams();
   // const launchParams = "NjYzODczODU0MA==";
 
-  useEffect(() => {
-    const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+  if (showIntro) return <Intro onFinish={() => setShowIntro(false)} />;
 
-    if (!hasSeenIntro) {
-      setShowIntro(true);
-      localStorage.setItem("hasSeenIntro", "true");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+
+  //   if (!hasSeenIntro) {
+  //     setShowIntro(true);
+  //     localStorage.setItem("hasSeenIntro", "true");
+  //   }
+  // }, []);
 
   useEffect(() => {
     const initialize = async () => {
@@ -44,7 +46,7 @@ function HomePage() {
             localStorage.removeItem("encoded_id_ready");
             localStorage.removeItem("display_name");
             localStorage.removeItem("profile_pic_url");
-            localStorage.removeItem("hasSeenIntro");
+            // localStorage.removeItem("hasSeenIntro");
 
             // ✅ Store fresh encoded ID
             localStorage.setItem("encoded_id", encodedGroupId as string);
