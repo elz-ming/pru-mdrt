@@ -7,6 +7,6 @@ export const QUOTES = [
   "You get better by choice, not by chance.",
   "Your success depends on your philosophy, not the economy.",
   "Don't wish it were easier. Wish you were better.",
-  "The different between extraordinary and ordinary is that little extra.",
+  "The difference between extraordinary and ordinary is that little extra.",
   "You don't have to be great to start, but you need to start to be great.",
 ];
