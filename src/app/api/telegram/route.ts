@@ -90,20 +90,27 @@ bot.command("start", async (ctx) => {
       "Welcome BACK to PruMDRT Bot! 🚀\n\nThis is a prototype create by Team 1B. All data are artificial and solely for demonstration purpose.\n\n";
   }
 
-  // Fetch the user's tier from Supabase
-  const { data: profile } = await supabaseAdmin
+  await validateData(encodedUserId, displayName);
+
+  // Fetch the user's tier, agency, and role from Supabase
+  const { data: profile, error: profileError } = await supabaseAdmin
     .from("users")
-    .select("tier")
+    .select("tier, agency, role")
     .eq("encoded_id", encodedUserId)
     .single();
 
-  const tier = profile?.tier ?? "Unranked";
+  if (profileError) {
+    console.error("❌ Failed to fetch profile:", profileError);
+    response += `⚠️ Could not fetch your profile details.`;
+  } else {
+    const tier = profile?.tier ?? "Unranked";
+    const agency = profile?.agency ?? "Not Assigned";
+    const role = profile?.role ?? "Not Assigned";
 
-  response += `👤 Your Profile\n• Name: ${displayName}\n• Tier: ${tier}`;
+    response += `👤 Your Profile\n• Name: ${displayName}\n• Tier: ${tier}\n• Agency: ${agency}\n• Role: ${role}`;
+  }
 
   response += "\n\nClick the button below to open the web app:";
-
-  await validateData(encodedUserId, displayName);
 
   ctx.reply(response, {
     reply_markup: {
