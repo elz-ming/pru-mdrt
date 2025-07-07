@@ -169,7 +169,7 @@ export default function ToDoPage() {
             ))}
           </div>
           {/* Motivational Quote Box */}
-          <div className="mx-4 rounded-2xl bg-white/90 text-[#e31d1a] p-4 border border-[#e31d1a] shadow-md">
+          <div className="mx-2 rounded-2xl bg-white/90 text-[#e31d1a] p-2 border border-[#e31d1a] shadow-md">
             <p className="text-center text-lg italic">{quote}</p>
           </div>
         </div>
