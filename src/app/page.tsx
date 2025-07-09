@@ -14,7 +14,9 @@ function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIntro, setShowIntro] = useState(true);
-  const [showMain, setShowMain] = useState(false); // only show when ready
+  const [showMain, setShowMain] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0); // ✅ Add refresh key
+
   const launchParams = useLaunchParams();
   // const launchParams = "NjYzODczODU0MA==";
 
@@ -36,7 +38,6 @@ function HomePage() {
             localStorage.removeItem("encoded_id_ready");
             localStorage.removeItem("display_name");
             localStorage.removeItem("profile_pic_url");
-            // localStorage.removeItem("hasSeenIntro");
 
             // ✅ Store fresh encoded ID
             localStorage.setItem("encoded_id", encodedGroupId as string);
@@ -96,8 +97,10 @@ function HomePage() {
       )}
       {showMain && (
         <>
-          <ActivityFeed />
-          <AddPostButton />
+          {/* ✅ This forces ActivityFeed to remount when refreshKey changes */}
+          <ActivityFeed key={refreshKey} />
+          {/* ✅ Pass the refresh trigger to AddPostButton */}
+          <AddPostButton onPostCreated={() => setRefreshKey((k) => k + 1)} />
         </>
       )}
     </>

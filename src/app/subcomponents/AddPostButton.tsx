@@ -6,7 +6,7 @@ import { Buffer } from "buffer";
 import { v4 as uuidv4 } from "uuid";
 import supabase from "@/app/lib/supabaseClient";
 
-export default function AddPostButton() {
+export default function ({ onPostCreated }: { onPostCreated: () => void }) {
   const [showModal, setShowModal] = useState(false);
   const [content, setContent] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -45,6 +45,7 @@ export default function AddPostButton() {
         setShowModal(false);
         setContent("");
         setFile(null);
+        onPostCreated(); // ✅ tell parent to refresh feed!
       } else {
         console.error("Error submitting post:", error);
       }
