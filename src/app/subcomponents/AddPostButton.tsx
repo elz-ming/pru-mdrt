@@ -6,7 +6,11 @@ import { Buffer } from "buffer";
 import { v4 as uuidv4 } from "uuid";
 import supabase from "@/app/lib/supabaseClient";
 
-export default function ({ onPostCreated }: { onPostCreated: () => void }) {
+export default function AddPostButton({
+  onPostCreated,
+}: {
+  onPostCreated: () => void;
+}) {
   const [showModal, setShowModal] = useState(false);
   const [content, setContent] = useState("");
   const [file, setFile] = useState<File | null>(null);
